@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMS API 문서</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        .endpoint {
+            background-color: #ecf0f1;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .method {
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 3px;
+            color: white;
+            font-size: 0.9em;
+        }
+        .get { background-color: #27ae60; }
+        .post { background-color: #f39c12; }
+        .put { background-color: #e74c3c; }
+        .delete { background-color: #8e44ad; }
+        .url {
+            font-family: 'Courier New', monospace;
+            background-color: #34495e;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .description {
+            margin: 10px 0;
+            color: #555;
+        }
+        .params, .response {
+            margin-top: 15px;
+        }
+        .params h4, .response h4 {
+            margin: 10px 0 5px 0;
+            color: #2c3e50;
+        }
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .toc {
+            background-color: #f1f2f6;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 5px 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #2980b9;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .home-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .home-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .header-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .back-button {
+            display: inline-block;
+            background-color: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #7f8c8d;
+        }
+        .status-code {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-200 { background-color: #27ae60; color: white; }
+        .status-201 { background-color: #f39c12; color: white; }
+        .status-400 { background-color: #e74c3c; color: white; }
+        .status-404 { background-color: #8e44ad; color: white; }
+        .status-500 { background-color: #34495e; color: white; }
+    </style>
+</head>
+<body>
+    <!-- 홈으로 가기 버튼 (우상단 고정) -->
+    <a href="/" class="home-button">🏠 홈으로</a>
+    
+    <div class="container">
+        <h1>📋 DMS (Digital Message Service) API 문서</h1>
+        
+        <!-- 헤더 컨트롤 버튼들 -->
+        <div class="header-controls">
+            <a href="/" class="back-button">🏠 홈으로 돌아가기</a>
+            <a href="/api/health" class="back-button">💚 시스템 상태</a>
+            <a href="/test" class="back-button">🧪 API 테스트</a>
+        </div>
+        
+        <div class="toc">
+            <h3>📖 목차</h3>
+            <ul>
+                <li><a href="#overview">개요</a></li>
+                <li><a href="#base-url">Base URL</a></li>
+                <li><a href="#userinfo">UserInfo API</a></li>
+                <li><a href="#wills">Wills API</a></li>
+                <li><a href="#recipients">Recipients API</a></li>
+                <li><a href="#triggers">Triggers API</a></li>
+                <li><a href="#dispatch-logs">Dispatch Logs API</a></li>
+                <li><a href="#health">Health Check API</a></li>
+            </ul>
+        </div>
+
+        <h2 id="overview">🎯 개요</h2>
+        <p>DMS는 디지털 메시지 서비스를 위한 RESTful API입니다. 사용자 정보, 유언장, 수신자, 트리거, 발송 로그 관리 기능을 제공합니다.</p>
+        
+        <h2 id="base-url">🌐 Base URL</h2>
+        <div class="endpoint">
+            <span class="url">http://127.0.0.1:5000</span>
+        </div>
+
+        <h2 id="userinfo">👤 UserInfo API</h2>
+        <p>사용자 정보를 관리하는 API입니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/users</span>
+            <div class="description">모든 사용자 목록 조회</div>
+            <div class="response">
+                <h4>📤 응답 예제:</h4>
+                <pre>{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "LastName": "김",
+      "FirstName": "철수",
+      "Email": "kim@example.com",
+      "Grade": "A",
+      "DOB": "1990-01-01",
+      "created_at": "2023-10-09T10:00:00"
+    }
+  ],
+  "count": 1
+}</pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/users/{id}</span>
+            <div class="description">특정 사용자 정보 조회</div>
+            <div class="params">
+                <h4>📥 파라미터:</h4>
+                <div class="table-container">
+                    <table>
+                        <tr><th>파라미터</th><th>타입</th><th>설명</th></tr>
+                        <tr><td>id</td><td>Integer</td><td>사용자 ID</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="response">
+                <h4>📤 응답 상태:</h4>
+                <span class="status-code status-200">200</span> 성공<br>
+                <span class="status-code status-404">404</span> 사용자를 찾을 수 없음
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <span class="url">/api/users</span>
+            <div class="description">새 사용자 생성</div>
+            <div class="params">
+                <h4>📥 요청 바디:</h4>
+                <pre>{
+  "LastName": "김",
+  "FirstName": "철수",
+  "Email": "kim@example.com",
+  "Grade": "A",
+  "DOB": "1990-01-01"
+}</pre>
+            </div>
+            <div class="response">
+                <h4>📤 응답 상태:</h4>
+                <span class="status-code status-201">201</span> 생성 성공<br>
+                <span class="status-code status-400">400</span> 잘못된 요청 데이터
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method put">PUT</span>
+            <span class="url">/api/users/{id}</span>
+            <div class="description">사용자 정보 수정</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method delete">DELETE</span>
+            <span class="url">/api/users/{id}</span>
+            <div class="description">사용자 삭제</div>
+        </div>
+
+        <h2 id="wills">📄 Wills API</h2>
+        <p>유언장 정보를 관리하는 API입니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/wills</span>
+            <div class="description">모든 유언장 목록 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/wills/{id}</span>
+            <div class="description">특정 유언장 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <span class="url">/api/wills</span>
+            <div class="description">새 유언장 생성</div>
+            <div class="params">
+                <h4>📥 요청 바디:</h4>
+                <pre>{
+  "subject": "나의 유언장",
+  "body": "유언장 내용..."
+}</pre>
+            </div>
+            <div class="params">
+                <h4>🔧 필수 필드:</h4>
+                <div class="table-container">
+                    <table>
+                        <tr><th>필드</th><th>타입</th><th>설명</th></tr>
+                        <tr><td>subject</td><td>String</td><td>유언장 제목</td></tr>
+                        <tr><td>body</td><td>Text</td><td>유언장 내용</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method put">PUT</span>
+            <span class="url">/api/wills/{id}</span>
+            <div class="description">유언장 수정</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method delete">DELETE</span>
+            <span class="url">/api/wills/{id}</span>
+            <div class="description">유언장 삭제</div>
+        </div>
+
+        <h2 id="recipients">📮 Recipients API</h2>
+        <p>수신자 정보를 관리하는 API입니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/recipients</span>
+            <div class="description">모든 수신자 목록 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/recipients/will/{will_id}</span>
+            <div class="description">특정 유언장의 수신자들 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <span class="url">/api/recipients</span>
+            <div class="description">새 수신자 추가</div>
+            <div class="params">
+                <h4>📥 요청 바디:</h4>
+                <pre>{
+  "will_id": 1,
+  "recipient_email": "recipient@example.com",
+  "recipient_name": "홍길동",
+  "relatedCode": "A"
+}</pre>
+            </div>
+            <div class="params">
+                <h4>🔧 필수 필드:</h4>
+                <div class="table-container">
+                    <table>
+                        <tr><th>필드</th><th>타입</th><th>설명</th></tr>
+                        <tr><td>will_id</td><td>Integer</td><td>유언장 ID</td></tr>
+                        <tr><td>recipient_email</td><td>String</td><td>수신자 이메일</td></tr>
+                        <tr><td>recipient_name</td><td>String</td><td>수신자 이름 (선택)</td></tr>
+                        <tr><td>relatedCode</td><td>String(1)</td><td>관계 코드 (A,B,C 등)</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="triggers">⚡ Triggers API</h2>
+        <p>트리거 정보를 관리하는 API입니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/triggers</span>
+            <div class="description">모든 트리거 목록 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/triggers/user/{user_id}</span>
+            <div class="description">특정 사용자의 트리거들 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <span class="url">/api/triggers</span>
+            <div class="description">새 트리거 생성</div>
+            <div class="params">
+                <h4>📥 요청 바디:</h4>
+                <pre>{
+  "user_id": 1,
+  "trigger_type": "inactivity",
+  "trigger_value": "30",
+  "is_triggered": false
+}</pre>
+            </div>
+            <div class="params">
+                <h4>🔧 트리거 타입:</h4>
+                <ul>
+                    <li><strong>inactivity</strong>: 비활성 기간 트리거</li>
+                    <li><strong>date</strong>: 특정 날짜 트리거</li>
+                    <li><strong>manual</strong>: 수동 트리거</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="dispatch-logs">📊 Dispatch Logs API</h2>
+        <p>발송 로그를 관리하는 API입니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/dispatch-logs</span>
+            <div class="description">모든 발송 로그 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/dispatch-logs/will/{will_id}</span>
+            <div class="description">특정 유언장의 발송 로그들 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/dispatch-logs/recipient/{recipient_id}</span>
+            <div class="description">특정 수신자의 발송 로그들 조회</div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <span class="url">/api/dispatch-logs</span>
+            <div class="description">새 발송 로그 생성</div>
+            <div class="params">
+                <h4>📥 요청 바디:</h4>
+                <pre>{
+  "will_id": 1,
+  "recipient_id": 1,
+  "sent_at": "2023-10-09T10:00:00Z",
+  "status": "sent"
+}</pre>
+            </div>
+            <div class="params">
+                <h4>🔧 상태 코드:</h4>
+                <ul>
+                    <li><strong>pending</strong>: 발송 대기</li>
+                    <li><strong>sent</strong>: 발송 완료</li>
+                    <li><strong>failed</strong>: 발송 실패</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="health">💚 Health Check API</h2>
+        <p>시스템 상태를 확인하는 API입니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/health</span>
+            <div class="description">시스템 및 데이터베이스 연결 상태 확인</div>
+            <div class="response">
+                <h4>📤 응답 예제:</h4>
+                <pre>{
+  "status": "ok",
+  "database": "connected",
+  "message": "Database connection successful"
+}</pre>
+            </div>
+        </div>
+
+        <h2>🔄 공통 응답 형식</h2>
+        <div class="endpoint">
+            <h3>성공 응답</h3>
+            <pre>{
+  "success": true,
+  "data": { ... },
+  "message": "작업 완료 메시지" (선택사항)
+}</pre>
+        </div>
+
+        <div class="endpoint">
+            <h3>오류 응답</h3>
+            <pre>{
+  "success": false,
+  "error": "오류 메시지"
+}</pre>
+        </div>
+
+        <h2>📋 HTTP 상태 코드</h2>
+        <div class="table-container">
+            <table>
+                <tr><th>상태 코드</th><th>설명</th></tr>
+                <tr><td><span class="status-code status-200">200</span></td><td>요청 성공</td></tr>
+                <tr><td><span class="status-code status-201">201</span></td><td>리소스 생성 성공</td></tr>
+                <tr><td><span class="status-code status-400">400</span></td><td>잘못된 요청</td></tr>
+                <tr><td><span class="status-code status-404">404</span></td><td>리소스를 찾을 수 없음</td></tr>
+                <tr><td><span class="status-code status-500">500</span></td><td>서버 내부 오류</td></tr>
+            </table>
+        </div>
+
+        <h2>🛠️ 사용 예제</h2>
+        <div class="endpoint">
+            <h3>cURL 예제</h3>
+            <pre># 사용자 목록 조회
+curl -X GET http://127.0.0.1:5000/api/users
+
+# 새 사용자 생성
+curl -X POST http://127.0.0.1:5000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "LastName": "김",
+    "FirstName": "철수",
+    "Email": "kim@example.com",
+    "Grade": "A",
+    "DOB": "1990-01-01"
+  }'
+
+# 유언장 생성
+curl -X POST http://127.0.0.1:5000/api/wills \
+  -H "Content-Type: application/json" \
+  -d '{
+    "subject": "나의 유언장",
+    "body": "소중한 사람들에게..."
+  }'</pre>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; padding: 20px; background-color: #f8f9fa; border-radius: 5px;">
+            <p><strong>📞 문의사항이 있으시면 개발팀에 연락해주세요.</strong></p>
+            <p>생성일: 2025년 10월 9일</p>
+        </div>
+        
+        <!-- 하단 네비게이션 버튼들 -->
+        <div style="text-align: center; margin-top: 30px; padding: 20px;">
+            <a href="/" class="back-button">🏠 홈으로 돌아가기</a>
+            <a href="/api/health" class="back-button">💚 시스템 상태 확인</a>
+            <a href="/test" class="back-button">🧪 API 테스트 실행</a>
+        </div>
+    </div>
+</body>
+</html>
