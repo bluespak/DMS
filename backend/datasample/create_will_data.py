@@ -25,6 +25,12 @@ load_dotenv()
 # 상위 디렉토리를 Python 경로에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# 로깅 시스템 import
+from utils.logging_config import get_dms_logger, log_info, log_error, log_warning, log_debug
+
+# 상위 디렉토리를 Python 경로에 추가
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from config import Config
 from models.userinfo import create_userinfo_model
 
@@ -165,8 +171,10 @@ def create_will_data(dry_run=False):
             # 데이터베이스 연결 테스트
             with db.engine.connect() as connection:
                 connection.execute(db.text('SELECT 1'))
+            log_info("✅ 데이터베이스 연결 성공")
             print("✅ 데이터베이스 연결 성공")
         except Exception as e:
+            log_error(f"❌ 데이터베이스 연결 실패: {e}")
             print(f"❌ 데이터베이스 연결 실패: {e}")
             return False
         
@@ -182,8 +190,10 @@ def create_will_data(dry_run=False):
             print("⚠️  사용자 데이터가 없습니다. 먼저 사용자를 생성해주세요.")
             return False
         
+        mode = "DRY RUN 모드" if dry_run else "실제 Will 데이터 생성"
+        log_info(f"{mode} 시작 - 총 {len(users)}명 사용자 처리 예정")
         print(f"\n{'='*60}")
-        print(f"{'DRY RUN 모드' if dry_run else '실제 Will 데이터 생성'} - 시작")
+        print(f"{mode} - 시작")
         print(f"{'='*60}")
         
         for user in users:

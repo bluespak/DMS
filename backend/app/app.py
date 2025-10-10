@@ -1,10 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, g
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import sys
 import os
+import time
 from dotenv import load_dotenv
-import logging
 
 # .env 파일 로드
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
@@ -12,13 +12,15 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 # 모델과 라우트 경로 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import Config
+from utils.logging_config import setup_flask_logging, get_dms_logger
 
 app = Flask(__name__)
 CORS(app)
 
-# 로깅 설정
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# DMS 로깅 시스템 설정
+dms_logger = setup_flask_logging(app)
+logger = dms_logger.get_logger()
+api_logger = dms_logger.get_api_logger()
 
 app.config.from_object(Config)
 
@@ -49,6 +51,62 @@ Will = create_will_model(db)
 Recipient = create_recipient_model(db)
 Trigger = create_trigger_model(db)
 DispatchLog = create_dispatchlog_model(db)
+
+# API 요청 로깅 미들웨어
+@app.before_request
+def log_request_info():
+    """요청 시작 시 로깅"""
+    g.start_time = time.time()
+    
+    # 정적 파일 요청은 로깅하지 않음
+    if request.endpoint == 'static':
+        return
+    
+    logger.debug(f"API Request: {request.method} {request.path} | IP: {request.remote_addr}")
+
+@app.after_request
+def log_response_info(response):
+    """응답 완료 시 로깅"""
+    # 정적 파일 요청은 로깅하지 않음
+    if request.endpoint == 'static':
+        return response
+    
+    if hasattr(g, 'start_time'):
+        response_time = time.time() - g.start_time
+        
+        # API 요청 로그 기록
+        dms_logger.log_api_request(
+            method=request.method,
+            endpoint=request.path,
+            ip=request.remote_addr,
+            status_code=response.status_code,
+            response_time=response_time
+        )
+        
+        # 에러 상태 코드인 경우 추가 로깅
+        if response.status_code >= 400:
+            logger.warning(f"API Error: {request.method} {request.path} | Status: {response.status_code} | IP: {request.remote_addr}")
+    
+    return response
+
+# 전역 에러 핸들러
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """전역 예외 처리 및 로깅"""
+    logger.error(f"Unhandled Exception: {str(e)} | Path: {request.path} | Method: {request.method} | IP: {request.remote_addr}", exc_info=True)
+    return jsonify({
+        'error': 'Internal server error',
+        'message': 'An unexpected error occurred'
+    }), 500
+
+@app.errorhandler(404)
+def not_found(error):
+    """404 에러 처리"""
+    logger.warning(f"404 Not Found: {request.method} {request.path} | IP: {request.remote_addr}")
+    return jsonify({
+        'error': 'Not found',
+        'message': 'The requested resource was not found'
+    }), 404
 
 # 라우트 초기화 및 등록
 app.register_blueprint(init_userinfo_routes(db, UserInfo))

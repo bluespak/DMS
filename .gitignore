@@ -43,9 +43,14 @@ env/
 .DS_Store
 Thumbs.db
 
-# Logs
+# Logs - DMS logging system
 *.log
+*.log.*
 logs/
+backend/logs/
+frontend/logs/
+**/*.log
+**/*.log.*
 
 # Node.js (for frontend)
 node_modules/
