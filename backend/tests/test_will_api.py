@@ -18,6 +18,7 @@ class TestWillAPI(BaseTestCase):
     def test_create_will_success(self):
         """유언장 생성 성공 테스트"""
         will_data = {
+            'user_id': 1,
             'subject': '나의 마지막 편지',
             'body': '소중한 사람들에게 전하는 마지막 말씀입니다.'
         }
@@ -31,14 +32,17 @@ class TestWillAPI(BaseTestCase):
         data = json.loads(response.data)
         self.assertTrue(data['success'])
         self.assertIn('data', data)
+        self.assertEqual(data['data']['user_id'], 1)
         self.assertEqual(data['data']['subject'], '나의 마지막 편지')
         self.assertEqual(data['data']['body'], '소중한 사람들에게 전하는 마지막 말씀입니다.')
         self.assertIn('created_at', data['data'])
+        self.assertIn('lastmodified_at', data['data'])
     
     def test_create_will_missing_required_fields(self):
         """필수 필드 누락으로 유언장 생성 실패 테스트"""
-        # subject 누락
+        # user_id 누락
         will_data = {
+            'subject': '제목만 있는 유언장',
             'body': '내용만 있는 유언장'
         }
         

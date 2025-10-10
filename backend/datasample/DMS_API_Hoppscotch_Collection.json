@@ -1,0 +1,882 @@
+{
+  "v": 10,
+  "name": "DMS API Collection",
+  "folders": [],
+  "requests": [
+    {
+      "v": "16",
+      "name": "Health Check",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/health",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_health_check"
+    },
+    {
+      "v": "16",
+      "name": "API Documentation",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/docs",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_api_docs"
+    },
+    {
+      "v": "16",
+      "name": "Get All Users",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/users",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_all_users"
+    },
+    {
+      "v": "16",
+      "name": "Get User by ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/users/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_user_by_id"
+    },
+    {
+      "v": "16",
+      "name": "Create User",
+      "method": "POST",
+      "endpoint": "http://127.0.0.1:5000/api/users",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"LastName\": \"Anderson\",\n  \"FirstName\": \"Sarah\",\n  \"Email\": \"sarah.anderson@example.com\",\n  \"Grade\": \"Premium\",\n  \"DOB\": \"1992-07-22\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_create_user"
+    },
+    {
+      "v": "16",
+      "name": "Update User",
+      "method": "PUT",
+      "endpoint": "http://127.0.0.1:5000/api/users/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"LastName\": \"Thompson\",\n  \"FirstName\": \"Sarah\",\n  \"Email\": \"sarah.thompson@example.com\",\n  \"Grade\": \"Gold\",\n  \"DOB\": \"1992-07-22\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_update_user"
+    },
+    {
+      "v": "16",
+      "name": "Delete User",
+      "method": "DELETE",
+      "endpoint": "http://127.0.0.1:5000/api/users/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_delete_user"
+    },
+    {
+      "v": "16",
+      "name": "Get All Wills",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/wills",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_all_wills"
+    },
+    {
+      "v": "16",
+      "name": "Get Will by ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/wills/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_will_by_id"
+    },
+    {
+      "v": "16",
+      "name": "Get Wills by User ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/wills/user/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_wills_by_user"
+    },
+    {
+      "v": "16",
+      "name": "Create Will",
+      "method": "POST",
+      "endpoint": "http://127.0.0.1:5000/api/wills",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"user_id\": 1,\n  \"subject\": \"My Digital Will\",\n  \"body\": \"This is my digital will content with detailed instructions for my digital legacy and asset distribution.\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_create_will"
+    },
+    {
+      "v": "16",
+      "name": "Update Will",
+      "method": "PUT",
+      "endpoint": "http://127.0.0.1:5000/api/wills/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"subject\": \"Updated Digital Will\",\n  \"body\": \"Updated will content with revised instructions and new beneficiaries.\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_update_will"
+    },
+    {
+      "v": "16",
+      "name": "Delete Will",
+      "method": "DELETE",
+      "endpoint": "http://127.0.0.1:5000/api/wills/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_delete_will"
+    },
+    {
+      "v": "16",
+      "name": "Get All Recipients",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/recipients",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_all_recipients"
+    },
+    {
+      "v": "16",
+      "name": "Get Recipients by Will ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/recipients/will/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_recipients_by_will"
+    },
+    {
+      "v": "16",
+      "name": "Get Recipient by ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/recipients/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_recipient_by_id"
+    },
+    {
+      "v": "16",
+      "name": "Create Recipient",
+      "method": "POST",
+      "endpoint": "http://127.0.0.1:5000/api/recipients",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"will_id\": 1,\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"relationship\": \"son\",\n  \"contact_info\": \"+1-555-0123\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_create_recipient"
+    },
+    {
+      "v": "16",
+      "name": "Update Recipient",
+      "method": "PUT",
+      "endpoint": "http://127.0.0.1:5000/api/recipients/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"name\": \"John Updated Doe\",\n  \"email\": \"john.updated@example.com\",\n  \"relationship\": \"son\",\n  \"contact_info\": \"+1-555-9999\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_update_recipient"
+    },
+    {
+      "v": "16",
+      "name": "Delete Recipient",
+      "method": "DELETE",
+      "endpoint": "http://127.0.0.1:5000/api/recipients/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_delete_recipient"
+    },
+    {
+      "v": "16",
+      "name": "Get All Triggers",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/triggers",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_all_triggers"
+    },
+    {
+      "v": "16",
+      "name": "Get Triggers by User ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/triggers/user/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_triggers_by_user"
+    },
+    {
+      "v": "16",
+      "name": "Get Trigger by ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/triggers/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_trigger_by_id"
+    },
+    {
+      "v": "16",
+      "name": "Create Trigger",
+      "method": "POST",
+      "endpoint": "http://127.0.0.1:5000/api/triggers",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"user_id\": 1,\n  \"trigger_type\": \"time_based\",\n  \"trigger_value\": \"2025-12-31 23:59:59\",\n  \"description\": \"New Year trigger\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_create_trigger"
+    },
+    {
+      "v": "16",
+      "name": "Update Trigger",
+      "method": "PUT",
+      "endpoint": "http://127.0.0.1:5000/api/triggers/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"trigger_type\": \"time_based\",\n  \"trigger_value\": \"2026-01-01 00:00:00\",\n  \"description\": \"Updated New Year trigger\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_update_trigger"
+    },
+    {
+      "v": "16",
+      "name": "Delete Trigger",
+      "method": "DELETE",
+      "endpoint": "http://127.0.0.1:5000/api/triggers/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_delete_trigger"
+    },
+    {
+      "v": "16",
+      "name": "Get All Dispatch Logs",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/dispatch-logs",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_all_dispatch_logs"
+    },
+    {
+      "v": "16",
+      "name": "Get Logs by Will ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/dispatch-logs/will/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_logs_by_will"
+    },
+    {
+      "v": "16",
+      "name": "Get Logs by Recipient ID",
+      "method": "GET",
+      "endpoint": "http://127.0.0.1:5000/api/dispatch-logs/recipient/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_get_logs_by_recipient"
+    },
+    {
+      "v": "16",
+      "name": "Create Dispatch Log",
+      "method": "POST",
+      "endpoint": "http://127.0.0.1:5000/api/dispatch-logs",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"will_id\": 1,\n  \"recipient_id\": 1,\n  \"dispatch_method\": \"email\",\n  \"status\": \"pending\",\n  \"message\": \"Will dispatch test message\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_create_dispatch_log"
+    },
+    {
+      "v": "16",
+      "name": "Update Dispatch Log",
+      "method": "PUT",
+      "endpoint": "http://127.0.0.1:5000/api/dispatch-logs/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"status\": \"sent\",\n  \"message\": \"Updated dispatch message\",\n  \"sent_at\": \"2025-10-10 10:00:00\"\n}"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_update_dispatch_log"
+    },
+    {
+      "v": "16",
+      "name": "Delete Dispatch Log",
+      "method": "DELETE",
+      "endpoint": "http://127.0.0.1:5000/api/dispatch-logs/1",
+      "params": [],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json",
+          "active": true,
+          "description": ""
+        }
+      ],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_dms_delete_dispatch_log"
+    }
+  ],
+  "auth": {
+    "authActive": true,
+    "authType": "none"
+  },
+  "headers": [],
+  "variables": [],
+  "_ref_id": "coll_dms_api_collection"
+}

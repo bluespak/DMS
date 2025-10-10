@@ -67,16 +67,19 @@ def init_will_routes(db, Will):
                     'error': 'No data provided'
                 }), 400
             
-            if not data.get('subject') or not data.get('body'):
+            if not data.get('user_id') or not data.get('subject') or not data.get('body'):
                 return jsonify({
                     'success': False,
-                    'error': 'Subject and body are required'
+                    'error': 'user_id, subject and body are required'
                 }), 400
             
             # 새 유언장 생성
             new_will = Will(
+                user_id=data.get('user_id'),
                 subject=data.get('subject'),
-                body=data.get('body')
+                body=data.get('body'),
+                created_at=datetime.utcnow(),
+                lastmodified_at=datetime.utcnow()
             )
             
             db.session.add(new_will)
@@ -92,6 +95,27 @@ def init_will_routes(db, Will):
         except Exception as e:
             db.session.rollback()
             logger.error(f"❌ 유언장 생성 실패: {e}")
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+
+    # 3-1. GET /api/wills/user/<user_id> - 특정 사용자의 유언장 조회
+    @will_bp.route('/user/<int:user_id>', methods=['GET'])
+    def get_wills_by_user(user_id):
+        try:
+            wills = Will.query.filter_by(user_id=user_id).all()
+            wills_list = [will.to_dict() for will in wills]
+            
+            logger.info(f"✅ 사용자 ID {user_id}의 유언장 조회 성공: {len(wills_list)}개")
+            return jsonify({
+                'success': True,
+                'data': wills_list,
+                'count': len(wills_list),
+                'user_id': user_id
+            }), 200
+        except Exception as e:
+            logger.error(f"❌ 사용자 ID {user_id}의 유언장 조회 실패: {e}")
             return jsonify({
                 'success': False,
                 'error': str(e)
@@ -120,6 +144,11 @@ def init_will_routes(db, Will):
                 will.subject = data['subject']
             if 'body' in data:
                 will.body = data['body']
+            if 'user_id' in data:
+                will.user_id = data['user_id']
+            
+            # 수정 시간 업데이트
+            will.lastmodified_at = datetime.utcnow()
             
             db.session.commit()
             

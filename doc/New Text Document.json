@@ -1,0 +1,49 @@
+{
+  "name": "Sample Collection",
+  "folders": [],
+  "requests": [
+    {
+      "name": "Get User Info",
+      "method": "GET",
+      "url": "https://api.example.com/users/1",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "auth": {
+        "authType": "none"
+      }
+    },
+    {
+      "name": "Create User",
+      "method": "POST",
+      "url": "https://api.example.com/users",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "content": "{ \"name\": \"John Doe\", \"email\": \"john@example.com\" }"
+      },
+      "auth": {
+        "authType": "none"
+      }
+    }
+  ],
+  "variables": [
+    {
+      "key": "token",
+      "value": "your_access_token_here"
+    }
+  ]
+}
