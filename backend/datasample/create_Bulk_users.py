@@ -28,6 +28,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import Config
 from models.userinfo import create_userinfo_model
+from utils.logging_config import get_data_logger
 
 def create_app():
     """Flask 애플리케이션 생성"""
@@ -45,6 +46,9 @@ def parse_date(date_string):
 
 def load_json_file(file_path):
     """JSON 파일을 로드하여 사용자 데이터 반환"""
+    data_logger = get_data_logger()
+    logger = data_logger.get_logger()
+    
     try:
         # 상대 경로 처리
         if not os.path.isabs(file_path):
@@ -56,15 +60,19 @@ def load_json_file(file_path):
             data = json.load(file)
             print(f"✅ JSON 파일 로드 성공: {file_path}")
             print(f"📊 총 {len(data)}명의 사용자 데이터 발견")
+            logger.info(f"JSON 파일 로드 성공: {file_path} - {len(data)}명의 사용자 데이터")
             return data
     except FileNotFoundError:
         print(f"❌ 파일을 찾을 수 없습니다: {file_path}")
+        logger.error(f"파일을 찾을 수 없음: {file_path}")
         return None
     except json.JSONDecodeError as e:
         print(f"❌ JSON 파싱 오류: {e}")
+        logger.error(f"JSON 파싱 오류: {e}")
         return None
     except Exception as e:
         print(f"❌ 파일 로드 오류: {e}")
+        logger.error(f"파일 로드 오류: {e}")
         return None
 
 def validate_user_data(user_data):
@@ -83,6 +91,14 @@ def validate_user_data(user_data):
 
 def create_bulk_users(json_file_path, dry_run=False):
     """JSON 파일의 사용자 데이터를 DB에 일괄 삽입"""
+    data_logger = get_data_logger()
+    logger = data_logger.get_logger()
+    
+    # 작업 시작 로그
+    logger.info("=" * 60)
+    logger.info(f"BULK USER IMPORT 시작 - {'DRY RUN' if dry_run else '실제 실행'}")
+    logger.info(f"파일: {json_file_path}")
+    logger.info("=" * 60)
     
     # JSON 데이터 로드
     users_data = load_json_file(json_file_path)
