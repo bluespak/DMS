@@ -1,5 +1,6 @@
 from flask import Blueprint
 import os
+import sys
 import subprocess
 from datetime import datetime
 
@@ -65,8 +66,33 @@ def init_test_routes():
                 <script>
                     function runAllTests() {
                         document.getElementById('runAllBtn').disabled = true;
-                        document.getElementById('runAllBtn').innerText = '모든 테스트 실행 중...';
+                        document.getElementById('runAllBtn').innerText = '🔄 모든 테스트 실행 중...';
+                        
+                        // 결과 영역 표시
+                        document.getElementById('testResults').style.display = 'block';
+                        document.getElementById('testResults').innerHTML = '<div style="text-align: center; padding: 20px;"><div style="display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div><br><br>테스트 실행 중...</div><style>@keyframes spin {0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }}</style>';
+                        
                         window.location.href = '/run-tests';
+                    }
+                    
+                    function showTerminalInstructions() {
+                        const instructions = `
+터미널에서 테스트 실행 방법:
+
+1. PowerShell 또는 Command Prompt를 열어주세요
+2. 다음 명령어를 실행해주세요:
+
+   cd "C:\\\\Users\\\\blues\\\\OneDrive\\\\Documents\\\\GitHub\\\\DMS\\\\backend\\\\tests"
+   python simple_test_runner.py
+
+3. 또는 특정 테스트만 실행하려면:
+   python -m unittest test_userinfo_api.TestUserInfoAPI
+   python -m unittest test_will_api.TestWillAPI
+   python -m unittest test_recipients_api.TestRecipientsAPI
+   python -m unittest test_triggers_api.TestTriggersAPI
+   python -m unittest test_dispatchlog_api.TestDispatchLogAPI
+`;
+                        alert(instructions);
                     }
                 </script>
             </head>
@@ -89,7 +115,16 @@ def init_test_routes():
                     </div>
                     
                     <button id="runAllBtn" onclick="runAllTests()" class="button">🚀 모든 테스트 실행</button>
+                    <button onclick="showTerminalInstructions()" class="button" style="background-color: #34495e;">📋 터미널 실행 방법</button>
                     <a href="/" class="button back-button">🏠 홈으로 돌아가기</a>
+                    
+                    <!-- 테스트 결과 표시 영역 -->
+                    <div id="testResults" style="display: none; margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+                        <h2>📊 테스트 결과</h2>
+                        <div id="resultContent">
+                            <!-- 테스트 결과가 여기에 표시됩니다 -->
+                        </div>
+                    </div>
                 </div>
             </body>
         </html>
@@ -108,31 +143,136 @@ def init_test_routes():
             backend_dir = os.path.dirname(route_dir)
             test_dir = os.path.join(backend_dir, 'tests')
             
-            # 간단한 테스트 러너 사용
-            import sys
+            # 별도 프로세스에서 테스트 실행 (Flask App Context 충돌 방지)
+            import subprocess
+            import json
             
             # 테스트 러너 경로
             runner_file = os.path.join(test_dir, 'simple_test_runner.py')
+            runner_script = os.path.join(test_dir, 'run_tests_standalone.py')
             
-            # 직접 임포트해서 실행
-            sys.path.insert(0, test_dir)
+            # 스탠드얼론 러너 스크립트 생성
+            standalone_script = '''
+import sys
+import os
+import json
+
+# UTF-8 출력을 위한 설정
+if sys.platform == "win32":
+    import codecs
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
+
+# 경로 설정
+current_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = os.path.dirname(current_dir)
+sys.path.insert(0, current_dir)
+sys.path.insert(0, backend_dir)
+
+try:
+    from simple_test_runner import run_all_tests
+    result = run_all_tests()
+    print(json.dumps(result, ensure_ascii=True))
+except Exception as e:
+    error_result = {
+        'success': False,
+        'total_tests': 0,
+        'total_failures': 0,
+        'total_errors': 1,
+        'modules': {},
+        'summary': f'테스트 실행 중 오류 발생: {str(e)}'
+    }
+    print(json.dumps(error_result, ensure_ascii=True))
+'''
+            
+            # 임시 스크립트 파일 생성
+            with open(runner_script, 'w', encoding='utf-8') as f:
+                f.write(standalone_script)
+            
+            # test_result 변수 초기화
+            test_result = {
+                'success': False,
+                'total_tests': 0,
+                'total_failures': 0,
+                'total_errors': 0,
+                'modules': {},
+                'summary': '테스트 초기화 중...'
+            }
+            
             try:
-                import simple_test_runner
-                # 항상 모든 테스트 실행
-                test_result = simple_test_runner.run_all_tests()
+                # Windows 환경을 위한 환경 변수 설정
+                env = os.environ.copy()
+                env['PYTHONIOENCODING'] = 'utf-8'
+                env['PYTHONLEGACYWINDOWSSTDIO'] = '0'
                 
-                # 새로운 형식의 결과 사용
-                success = test_result['success']
-                total_tests = test_result['total_tests']
-                modules = test_result['modules']
-                summary = test_result['summary']
+                # 별도 프로세스에서 테스트 실행
+                result = subprocess.run(
+                    [sys.executable, runner_script],
+                    capture_output=True,
+                    text=True,
+                    encoding='utf-8',
+                    env=env,
+                    cwd=test_dir,
+                    timeout=300  # 5분 타임아웃
+                )
                 
+                if result.returncode == 0 and result.stdout.strip():
+                    test_result = json.loads(result.stdout.strip())
+                    success = test_result['success']
+                    total_tests = test_result['total_tests']
+                    modules = test_result['modules']
+                    summary = test_result['summary']
+                else:
+                    # 프로세스 실행 실패
+                    success = False
+                    total_tests = 0
+                    modules = {}
+                    summary = f'테스트 프로세스 실행 실패: {result.stderr if result.stderr else "알 수 없는 오류"}'
+                    # test_result도 업데이트
+                    test_result.update({
+                        'success': False,
+                        'total_tests': 0,
+                        'total_failures': 0,
+                        'total_errors': 1,
+                        'modules': {},
+                        'summary': summary
+                    })
+                    
+            except subprocess.TimeoutExpired:
+                success = False
+                total_tests = 0
+                modules = {}
+                summary = '테스트 실행 시간 초과 (5분)'
+                # test_result도 업데이트
+                test_result.update({
+                    'success': False,
+                    'total_tests': 0,
+                    'total_failures': 0,
+                    'total_errors': 1,
+                    'modules': {},
+                    'summary': summary
+                })
             except Exception as e:
-                # fallback: 에러 처리
                 success = False
                 total_tests = 0
                 modules = {}
                 summary = f'테스트 실행 중 오류 발생: {str(e)}'
+                # test_result도 업데이트
+                test_result.update({
+                    'success': False,
+                    'total_tests': 0,
+                    'total_failures': 0,
+                    'total_errors': 1,
+                    'modules': {},
+                    'summary': summary
+                })
+            finally:
+                # 임시 스크립트 파일 삭제
+                if os.path.exists(runner_script):
+                    try:
+                        os.remove(runner_script)
+                    except:
+                        pass
             
             # 모듈별 결과를 생성하는 함수
             def generate_module_card(module_name, module_result):

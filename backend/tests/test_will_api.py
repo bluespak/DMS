@@ -5,6 +5,28 @@ from test_config import BaseTestCase
 class TestWillAPI(BaseTestCase):
     """Will API 테스트"""
     
+    def setUp(self):
+        """테스트 전 실행되는 메서드"""
+        super().setUp()
+        
+        # 테스트용 사용자 생성 (UserInfo 모델의 실제 필드명 사용)
+        user_data = {
+            'LastName': '홍',
+            'FirstName': '길동',
+            'Email': 'hong@example.com',
+            'Grade': 'A',
+            'DOB': '1990-01-01'
+        }
+        
+        response = self.client.post('/api/userinfo',
+                                  data=json.dumps(user_data),
+                                  content_type='application/json')
+        
+        if response.status_code == 201:
+            self.test_user = json.loads(response.data)
+        else:
+            raise Exception(f"테스트 사용자 생성 실패: Status {response.status_code}, Data: {response.data.decode()}")
+    
     def test_get_all_wills_empty(self):
         """빈 유언장 목록 조회 테스트"""
         response = self.client.get('/api/wills')
@@ -18,7 +40,7 @@ class TestWillAPI(BaseTestCase):
     def test_create_will_success(self):
         """유언장 생성 성공 테스트"""
         will_data = {
-            'user_id': 1,
+            'user_id': self.test_user['id'],
             'subject': '나의 마지막 편지',
             'body': '소중한 사람들에게 전하는 마지막 말씀입니다.'
         }
@@ -32,7 +54,7 @@ class TestWillAPI(BaseTestCase):
         data = json.loads(response.data)
         self.assertTrue(data['success'])
         self.assertIn('data', data)
-        self.assertEqual(data['data']['user_id'], 1)
+        self.assertEqual(data['data']['user_id'], self.test_user['id'])
         self.assertEqual(data['data']['subject'], '나의 마지막 편지')
         self.assertEqual(data['data']['body'], '소중한 사람들에게 전하는 마지막 말씀입니다.')
         self.assertIn('created_at', data['data'])
@@ -71,6 +93,7 @@ class TestWillAPI(BaseTestCase):
         """유언장 ID로 조회 성공 테스트"""
         # 먼저 유언장 생성
         will_data = {
+            'user_id': self.test_user['id'],
             'subject': '테스트 유언장',
             'body': '테스트 내용입니다.'
         }
@@ -103,6 +126,7 @@ class TestWillAPI(BaseTestCase):
         """유언장 수정 성공 테스트"""
         # 먼저 유언장 생성
         will_data = {
+            'user_id': self.test_user['id'],
             'subject': '원본 제목',
             'body': '원본 내용'
         }
@@ -134,6 +158,7 @@ class TestWillAPI(BaseTestCase):
         """유언장 일부 필드만 수정 테스트"""
         # 먼저 유언장 생성
         will_data = {
+            'user_id': self.test_user['id'],
             'subject': '원본 제목',
             'body': '원본 내용'
         }
@@ -178,6 +203,7 @@ class TestWillAPI(BaseTestCase):
         """유언장 삭제 성공 테스트"""
         # 먼저 유언장 생성
         will_data = {
+            'user_id': self.test_user['id'],
             'subject': '삭제할 유언장',
             'body': '삭제될 예정입니다.'
         }
@@ -212,9 +238,9 @@ class TestWillAPI(BaseTestCase):
         """유언장 목록 조회 (데이터 있음) 테스트"""
         # 여러 유언장 생성
         wills_data = [
-            {'subject': '첫 번째 유언장', 'body': '첫 번째 내용'},
-            {'subject': '두 번째 유언장', 'body': '두 번째 내용'},
-            {'subject': '세 번째 유언장', 'body': '세 번째 내용'}
+            {'user_id': self.test_user['id'], 'subject': '첫 번째 유언장', 'body': '첫 번째 내용'},
+            {'user_id': self.test_user['id'], 'subject': '두 번째 유언장', 'body': '두 번째 내용'},
+            {'user_id': self.test_user['id'], 'subject': '세 번째 유언장', 'body': '세 번째 내용'}
         ]
         
         for will_data in wills_data:

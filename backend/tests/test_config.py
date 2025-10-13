@@ -10,9 +10,40 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 class TestConfig:
     """테스트용 설정"""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # 메모리 내 SQLite DB 사용
+    # 테스트 전용 MySQL 데이터베이스 사용 (운영 DB와 분리)
+    # 실제 운영 환경과 동일한 MySQL 엔진으로 정확한 테스트 가능
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://dmsTestUser:dmstest2025!@localhost/dmsdb_test'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'test-secret-key'
+
+def _ensure_latest_schema(db):
+    """최신 스키마로 테이블 재생성"""
+    try:
+        from sqlalchemy import inspect, text
+        
+        # 테이블 스키마 확인
+        inspector = inspect(db.engine)
+        
+        # dispatch_log 테이블이 존재하고 구버전인지 확인
+        if inspector.has_table('dispatch_log'):
+            columns = [col['name'] for col in inspector.get_columns('dispatch_log')]
+            
+            # delivered_at, read_at 컬럼이 없으면 구버전
+            if 'delivered_at' not in columns or 'read_at' not in columns:
+                print("⚠️ 구버전 dispatch_log 테이블 발견, 재생성 중...")
+                
+                # 기존 테이블 삭제 후 재생성
+                with db.engine.connect() as conn:
+                    conn.execute(text('DROP TABLE IF EXISTS dispatch_log'))
+                    conn.commit()
+                
+                # 최신 스키마로 테이블 재생성
+                db.create_all()
+                print("✅ dispatch_log 테이블이 최신 스키마로 재생성됨")
+        
+    except Exception as e:
+        print(f"⚠️ 스키마 확인 실패: {e}")
+        pass
 
 def create_test_app():
     """테스트용 Flask 앱 생성"""
@@ -172,7 +203,7 @@ def create_test_app():
             }), 400
         
         # 필수 필드 검증
-        required_fields = ['subject', 'body']
+        required_fields = ['user_id', 'subject', 'body']
         missing_fields = [field for field in required_fields if not data.get(field)]
         if missing_fields:
             return jsonify({
@@ -184,6 +215,7 @@ def create_test_app():
             from datetime import datetime
             
             new_will = Will(
+                user_id=data['user_id'],
                 subject=data['subject'],
                 body=data['body'],
                 created_at=datetime.utcnow()
@@ -669,7 +701,7 @@ def create_test_app():
         
         # status 검증
         if 'status' in data:
-            valid_statuses = ['pending', 'sent', 'failed']
+            valid_statuses = ['pending', 'sent', 'delivered', 'read', 'failed']
             if data['status'] not in valid_statuses:
                 return jsonify({
                     'success': False,
@@ -683,6 +715,8 @@ def create_test_app():
                 will_id=data['will_id'],
                 recipient_id=data['recipient_id'],
                 sent_at=datetime.utcnow() if data.get('sent_at') else None,
+                delivered_at=datetime.utcnow() if data.get('delivered_at') else None,
+                read_at=datetime.utcnow() if data.get('read_at') else None,
                 status=data.get('status', 'pending')
             )
             
@@ -721,7 +755,7 @@ def create_test_app():
             
             # 업데이트 가능한 필드들
             if 'status' in data:
-                valid_statuses = ['pending', 'sent', 'failed']
+                valid_statuses = ['pending', 'sent', 'delivered', 'read', 'failed']
                 if data['status'] not in valid_statuses:
                     return jsonify({
                         'success': False,
@@ -731,6 +765,10 @@ def create_test_app():
             
             if 'sent_at' in data:
                 log.sent_at = datetime.utcnow()
+            if 'delivered_at' in data:
+                log.delivered_at = datetime.utcnow()
+            if 'read_at' in data:
+                log.read_at = datetime.utcnow()
             
             db.session.commit()
             
@@ -807,8 +845,12 @@ def create_test_app():
     app.register_blueprint(triggers_bp, url_prefix='/api/triggers')
     app.register_blueprint(dispatchlog_bp, url_prefix='/api/dispatch-logs')
     
-    # 데이터베이스 테이블 생성
+    # 데이터베이스 테이블 생성 및 스키마 확인
     with app.app_context():
+        # 최신 스키마 확인 및 필요시 재생성
+        _ensure_latest_schema(db)
+        
+        # 모든 테이블 생성 (누락된 테이블만 생성됨)
         db.create_all()
     
     return app, db, {
@@ -829,11 +871,19 @@ class BaseTestCase(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         
-        # 테스트용 데이터베이스 테이블 생성
+        # 테스트용 데이터베이스 테이블 생성 (이미 create_test_app에서 최신 스키마로 처리됨)
         self.db.create_all()
         
     def tearDown(self):
         """각 테스트 실행 후 정리"""
-        self.db.session.remove()
-        self.db.drop_all()
-        self.app_context.pop()
+        try:
+            # 모든 테스트 데이터 삭제 (운영 데이터 보호)
+            for table in reversed(self.db.metadata.sorted_tables):
+                self.db.session.execute(table.delete())
+            self.db.session.commit()
+        except Exception as e:
+            # 에러 발생 시 롤백
+            self.db.session.rollback()
+        finally:
+            self.db.session.remove()
+            self.app_context.pop()

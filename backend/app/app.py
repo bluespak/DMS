@@ -132,7 +132,19 @@ with app.app_context():
 
 
 
+def mask_db_uri(uri):
+    """데이터베이스 URI에서 비밀번호를 마스킹합니다."""
+    if not uri or 'Not configured' in uri:
+        return uri
+    
+    import re
+    # mysql+pymysql://user:password@host/db 패턴에서 password 부분을 ****로 마스킹
+    masked_uri = re.sub(r'://([^:]+):([^@]+)@', r'://\1:****@', uri)
+    return masked_uri
+
 if __name__ == '__main__':
     logger.info("🚀 Flask 애플리케이션 시작 중...")
-    logger.info(f"데이터베이스 URI: {app.config.get('SQLALCHEMY_DATABASE_URI', 'Not configured')}")
+    db_uri = app.config.get('SQLALCHEMY_DATABASE_URI', 'Not configured')
+    masked_uri = mask_db_uri(db_uri)
+    logger.info(f"데이터베이스 URI: {masked_uri}")
     app.run(debug=True)

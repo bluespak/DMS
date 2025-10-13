@@ -10,8 +10,27 @@ class TestDispatchLogAPI(BaseTestCase):
         """테스트 설정 - 테스트용 유언장과 수신자 생성"""
         super().setUp()
         
+        # 테스트용 사용자 생성
+        user_data = {
+            'LastName': '테스트',
+            'FirstName': '사용자',
+            'Email': 'test@example.com',
+            'Grade': 'A',
+            'DOB': '1990-01-01'
+        }
+        
+        user_response = self.client.post('/api/userinfo',
+                                       data=json.dumps(user_data),
+                                       content_type='application/json')
+        
+        if user_response.status_code == 201:
+            self.test_user = json.loads(user_response.data)
+        else:
+            raise Exception(f"테스트 사용자 생성 실패: {user_response.status_code}")
+        
         # 테스트용 유언장 생성
         will_data = {
+            'user_id': self.test_user['id'],
             'subject': '테스트 유언장',
             'body': '테스트 내용'
         }
