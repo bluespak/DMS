@@ -86,11 +86,14 @@ DMS/
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 18** - Modern JavaScript library for building user interfaces
-- **Create React App** - Zero-configuration React development environment
-- **Axios** - HTTP client for API communication
+- **React 18.2.0** - Modern JavaScript library for building user interfaces
+- **Create React App 5.0.1** - Zero-configuration React development environment
+- **Node.js 18+** - JavaScript runtime for development tools
+- **npm/yarn** - Package management and build tools
+- **Axios 1.6.0** - HTTP client for API communication
 - **CSS3** - Modern styling with responsive design
 - **React Hooks** - Functional component state management
+- **Development Proxy** - Automatic API proxying to Flask backend (port 5000)
 
 ### Backend Framework
 - **Flask 3.1.2** - Python web framework
@@ -195,9 +198,11 @@ DMS/
 ## 🚀 Installation
 
 ### Prerequisites
-- Python 3.13+
-- MySQL 8.0+ (or AWS RDS MySQL instance)
-- Virtual environment (recommended)
+- **Python 3.13+** - Backend development
+- **Node.js 18+** - Frontend development
+- **npm 9+** or **yarn 1.22+** - Package manager
+- **MySQL 8.0+** (or AWS RDS MySQL instance) - Database
+- **Virtual environment** (recommended for Python)
 
 ### Step 1: Clone Repository
 ```bash
@@ -216,13 +221,23 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-### Step 3: Install Dependencies
+### Step 3: Install Backend Dependencies
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-### Step 4: Environment Configuration
+### Step 4: Install Frontend Dependencies
+```bash
+cd ../frontend
+npm install
+# or with yarn
+yarn install
+```
+
+### Step 5: Environment Configuration
+
+#### Backend Configuration
 Create `.env` file in the backend directory:
 ```env
 # Database Configuration
@@ -238,20 +253,36 @@ FLASK_DEBUG=True
 SECRET_KEY=your-secret-key
 ```
 
-### Step 5: Database Setup
+#### Frontend Configuration
+The frontend is pre-configured with a proxy to the Flask backend (`http://localhost:5000`).
+No additional configuration needed for development.
+
+### Step 6: Database Setup
 ```bash
 # Run database creation scripts
 mysql -h your-host -u your-user -p your-database < model/createDB.sql
 mysql -h your-host -u your-user -p your-database < model/createTables.sql
 ```
 
-### Step 6: Run Application
+### Step 7: Run Applications
+
+#### Start Backend Server
 ```bash
-cd app
+cd backend/app
 python app.py
 ```
+Backend API will be available at: `http://127.0.0.1:5000`
 
-The application will be available at: `http://127.0.0.1:5000`
+#### Start Frontend Development Server
+```bash
+cd frontend
+npm start
+# or with yarn
+yarn start
+```
+React application will be available at: `http://localhost:3000`
+
+The frontend automatically proxies API requests to the backend server.
 
 ## ⚙️ Configuration
 
@@ -410,7 +441,9 @@ Recipients (1) ──── (N) DispatchLog
 
 ## 💡 Usage Examples
 
-### Starting the Application
+### Starting the Full-Stack Application
+
+#### Backend (Flask API)
 ```bash
 # Activate virtual environment
 .venv\Scripts\Activate.ps1  # Windows
@@ -420,6 +453,17 @@ source .venv/bin/activate   # Linux/Mac
 cd backend/app
 python app.py
 ```
+API available at: `http://127.0.0.1:5000`
+
+#### Frontend (React App)
+```bash
+# In a new terminal
+cd frontend
+npm start
+```
+Web application available at: `http://localhost:3000`
+
+**Note**: Start the backend first, then the frontend. The React app will automatically proxy API calls to the Flask backend.
 
 ### Creating a User via API
 ```python
@@ -496,10 +540,11 @@ python simple_test_runner.py
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
 3. Make your changes
-4. Run tests: `python backend/tests/simple_test_runner.py`
-5. Commit changes: `git commit -m 'Add amazing feature'`
-6. Push to branch: `git push origin feature/amazing-feature`
-7. Open a Pull Request
+4. Run backend tests: `python backend/tests/simple_test_runner.py`
+5. Test frontend: `cd frontend && npm test`
+6. Commit changes: `git commit -m 'Add amazing feature'`
+7. Push to branch: `git push origin feature/amazing-feature`
+8. Open a Pull Request
 
 ### Development Guidelines
 - Follow PEP 8 style guidelines
