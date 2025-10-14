@@ -6,7 +6,7 @@ def create_will_model(db):
     class Will(db.Model):
         __tablename__ = 'wills'
         id = db.Column(db.Integer, primary_key=True)
-        user_id = db.Column(db.Integer, db.ForeignKey('UserInfo.id'), nullable=False)
+        user_id = db.Column(db.String(50), db.ForeignKey('UserInfo.user_id'), nullable=False)  # user_id 필드 참조로 변경
         subject = db.Column(db.String(255))
         body = db.Column(db.Text)
         created_at = db.Column(db.DateTime, default=datetime.utcnow)

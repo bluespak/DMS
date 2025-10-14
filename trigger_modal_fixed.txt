@@ -1,0 +1,172 @@
+          {/* 트리거 모달 */}
+          {showTriggerModal && currentTriggerUser && (
+            <div className="modal-overlay">
+              <div className="trigger-modal">
+                <div className="modal-header">
+                  <h3>⏰ {currentTriggerUser.FirstName} {currentTriggerUser.LastName}의 트리거 관리</h3>
+                  <button 
+                    onClick={closeTriggerModal}
+                    className="close-button"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="modal-content">
+                  {/* 트리거 이력 섹션 */}
+                  <div className="trigger-history">
+                    <div className="trigger-history-header">
+                      <h4>📋 트리거 이력</h4>
+                      <button 
+                        onClick={() => {
+                          setShowTriggerForm(!showTriggerForm);
+                          if (!showTriggerForm) {
+                            setEditingTrigger({
+                              user_id: currentTriggerUser.user_id,
+                              trigger_type: '',
+                              trigger_date: '',
+                              status: 'pending'
+                            });
+                          }
+                        }}
+                        className={`add-trigger-button ${showTriggerForm ? 'active' : ''}`}
+                        title={showTriggerForm ? '폼 닫기' : '새 트리거 추가'}
+                      >
+                        {showTriggerForm ? '✕' : '➕'}
+                      </button>
+                    </div>
+                    
+                    {userTriggers.length > 0 ? (
+                      <div className="trigger-list">
+                        {userTriggers.map((trigger, index) => (
+                          <div key={trigger.trigger_id || index} className="trigger-item">
+                            <div className="trigger-info">
+                              <div className="trigger-header">
+                                <span className="trigger-type">
+                                  📋 {trigger.trigger_type?.toUpperCase() || 'MANUAL'}
+                                </span>
+                                <span className="trigger-date">
+                                  {trigger.trigger_date ? new Date(trigger.trigger_date).toLocaleDateString('ko-KR') : '날짜 없음'}
+                                </span>
+                                {trigger.status === 'pending' && (
+                                  <button 
+                                    onClick={() => startEditTrigger(trigger)}
+                                    className="edit-trigger-button"
+                                    title="트리거 편집"
+                                  >
+                                    ✏️
+                                  </button>
+                                )}
+                              </div>
+                              <div className="trigger-status">
+                                상태: <span className={`status ${trigger.status?.toLowerCase()}`}>
+                                  {trigger.status === 'completed' ? '완료' : 
+                                   trigger.status === 'pending' ? '대기중' : 
+                                   trigger.status === 'failed' ? '실패' : trigger.status}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="no-triggers">
+                        <p>🔍 등록된 트리거가 없습니다.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 새 트리거 추가/수정 폼 */}
+                  {showTriggerForm && (
+                    <div className="trigger-form-container">
+                      <div className="trigger-form">
+                        <div className="trigger-form-header">
+                          <h4>
+                            {editingTrigger?.trigger_id ? '✏️ 트리거 수정' : '➕ 새 트리거 추가'}
+                          </h4>
+                          <button 
+                            onClick={() => {
+                              setShowTriggerForm(false);
+                              setEditingTrigger(null);
+                            }}
+                            className="close-form-button"
+                            title="폼 닫기"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                        
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label>트리거 타입:</label>
+                            <select 
+                              name="trigger_type"
+                              value={editingTrigger?.trigger_type || ''}
+                              onChange={handleTriggerInputChange}
+                              className="form-control"
+                            >
+                              <option value="">타입 선택</option>
+                              <option value="email">📧 이메일</option>
+                              <option value="sms">📱 SMS</option>
+                              <option value="notification">🔔 알림</option>
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label>트리거 날짜:</label>
+                            <input 
+                              type="date"
+                              name="trigger_date"
+                              value={editingTrigger?.trigger_date || ''}
+                              onChange={handleTriggerInputChange}
+                              className="form-control"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <label>상태:</label>
+                          <select 
+                            name="status"
+                            value={editingTrigger?.status || 'pending'}
+                            onChange={handleTriggerInputChange}
+                            className="form-control"
+                          >
+                            <option value="pending">대기중</option>
+                            <option value="completed">완료</option>
+                            <option value="failed">실패</option>
+                          </select>
+                        </div>
+                        
+                        <div className="form-buttons">
+                          <button 
+                            onClick={saveTrigger}
+                            className="save-button"
+                            disabled={!editingTrigger?.trigger_type || !editingTrigger?.trigger_date}
+                          >
+                            {editingTrigger?.trigger_id ? '수정 완료' : '추가'}
+                          </button>
+                          <button 
+                            onClick={() => {
+                              setShowTriggerForm(false);
+                              setEditingTrigger(null);
+                            }}
+                            className="cancel-button"
+                          >
+                            취소
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="modal-footer">
+                  <button 
+                    onClick={closeTriggerModal}
+                    className="cancel-button"
+                  >
+                    닫기
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}

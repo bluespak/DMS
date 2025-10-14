@@ -11,6 +11,7 @@ class TestWillAPI(BaseTestCase):
         
         # 테스트용 사용자 생성 (UserInfo 모델의 실제 필드명 사용)
         user_data = {
+            'user_id': 'hong.gildong.001',  # user_id 필드 추가
             'LastName': '홍',
             'FirstName': '길동',
             'Email': 'hong@example.com',
@@ -18,7 +19,7 @@ class TestWillAPI(BaseTestCase):
             'DOB': '1990-01-01'
         }
         
-        response = self.client.post('/api/userinfo',
+        response = self.client.post('/api/users',
                                   data=json.dumps(user_data),
                                   content_type='application/json')
         
@@ -40,7 +41,7 @@ class TestWillAPI(BaseTestCase):
     def test_create_will_success(self):
         """유언장 생성 성공 테스트"""
         will_data = {
-            'user_id': self.test_user['id'],
+            'user_id': self.test_user['user_id'],  # user_id 필드 사용
             'subject': '나의 마지막 편지',
             'body': '소중한 사람들에게 전하는 마지막 말씀입니다.'
         }

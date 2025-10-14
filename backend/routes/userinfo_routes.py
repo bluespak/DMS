@@ -30,11 +30,11 @@ def init_userinfo_routes(db, UserInfo):
                 'error': str(e)
             }), 500
 
-    # 2. GET /api/users/<id> - 특정 사용자 조회
-    @userinfo_bp.route('/<int:user_id>', methods=['GET'])
+    # 2. GET /api/users/<user_id> - 특정 사용자 조회 (user_id 문자열 기반)
+    @userinfo_bp.route('/<string:user_id>', methods=['GET'])
     def get_user(user_id):
         try:
-            user = UserInfo.query.get(user_id)
+            user = UserInfo.query.filter_by(user_id=user_id).first()
             if not user:
                 logger.warning(f"⚠️ 사용자 ID {user_id} 찾을 수 없음")
                 return jsonify({
@@ -80,10 +80,11 @@ def init_userinfo_routes(db, UserInfo):
             
             # 새 사용자 생성
             new_user = UserInfo(
-                LastName=data.get('LastName'),
-                FirstName=data.get('FirstName'),
-                Email=data.get('Email'),
-                Grade=data.get('Grade'),
+                user_id=data.get('user_id'),
+                lastname=data.get('lastname'),
+                firstname=data.get('firstname'),
+                email=data.get('email'),
+                grade=data.get('grade'),
                 DOB=dob
             )
             
@@ -124,14 +125,14 @@ def init_userinfo_routes(db, UserInfo):
                 }), 400
             
             # 데이터 업데이트
-            if 'LastName' in data:
-                user.LastName = data['LastName']
-            if 'FirstName' in data:
-                user.FirstName = data['FirstName']
-            if 'Email' in data:
-                user.Email = data['Email']
-            if 'Grade' in data:
-                user.Grade = data['Grade']
+            if 'lastname' in data:
+                user.lastname = data['lastname']
+            if 'firstname' in data:
+                user.firstname = data['firstname']
+            if 'email' in data:
+                user.email = data['email']
+            if 'grade' in data:
+                user.grade = data['grade']
             if 'DOB' in data:
                 if data['DOB']:
                     try:

@@ -99,10 +99,11 @@ def create_test_app():
                 dob = datetime.strptime(data['DOB'], '%Y-%m-%d').date()
             
             new_user = UserInfo(
-                LastName=data.get('LastName'),
-                FirstName=data.get('FirstName'),
-                Email=data.get('Email'),
-                Grade=data.get('Grade'),
+                user_id=data.get('user_id'),
+                lastname=data.get('lastname'),
+                firstname=data.get('firstname'),
+                email=data.get('email'),
+                grade=data.get('grade'),
                 DOB=dob
             )
             
@@ -112,7 +113,12 @@ def create_test_app():
         except ValueError as e:
             return jsonify({'error': 'Invalid date format'}), 400
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            db.session.rollback()
+            error_msg = str(e)
+            # 중복 키 에러인 경우 400 반환
+            if 'Duplicate entry' in error_msg or 'duplicate key' in error_msg.lower():
+                return jsonify({'error': 'User already exists'}), 400
+            return jsonify({'error': error_msg}), 500
     
     @userinfo_bp.route('/<int:user_id>', methods=['PUT'])
     def update_user(user_id):
@@ -122,14 +128,14 @@ def create_test_app():
         
         data = request.get_json()
         try:
-            if data.get('LastName'):
-                user.LastName = data['LastName']
-            if data.get('FirstName'):
-                user.FirstName = data['FirstName']
-            if data.get('Email'):
-                user.Email = data['Email']
-            if data.get('Grade'):
-                user.Grade = data['Grade']
+            if data.get('lastname'):
+                user.lastname = data['lastname']
+            if data.get('firstname'):
+                user.firstname = data['firstname']
+            if data.get('email'):
+                user.email = data['email']
+            if data.get('grade'):
+                user.grade = data['grade']
             if data.get('DOB'):
                 from datetime import datetime
                 user.DOB = datetime.strptime(data['DOB'], '%Y-%m-%d').date()
@@ -839,7 +845,7 @@ def create_test_app():
                 'error': str(e)
             }), 500
 
-    app.register_blueprint(userinfo_bp, url_prefix='/api/userinfo')
+    app.register_blueprint(userinfo_bp, url_prefix='/api/users')
     app.register_blueprint(will_bp, url_prefix='/api/wills')
     app.register_blueprint(recipients_bp, url_prefix='/api/recipients')
     app.register_blueprint(triggers_bp, url_prefix='/api/triggers')

@@ -31,10 +31,10 @@ def init_triggers_routes(db, Trigger):
             }), 500
 
     # 2. GET /api/triggers/user/<user_id> - 특정 사용자의 트리거들 조회
-    @triggers_bp.route('/user/<int:user_id>', methods=['GET'])
+    @triggers_bp.route('/user/<user_id>', methods=['GET'])
     def get_triggers_by_user(user_id):
         try:
-            triggers = Trigger.query.filter_by(user_id=user_id).all()
+            triggers = Trigger.query.filter_by(user_id=user_id).order_by(Trigger.trigger_date.desc()).all()
             triggers_list = [trigger.to_dict() for trigger in triggers]
             logger.info(f"✅ 사용자 ID {user_id}의 트리거 조회 성공: {len(triggers_list)}개")
             return jsonify({
@@ -44,6 +44,32 @@ def init_triggers_routes(db, Trigger):
             }), 200
         except Exception as e:
             logger.error(f"❌ 사용자 ID {user_id} 트리거 조회 실패: {e}")
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+
+    # 2-1. GET /api/triggers/user/<user_id>/pending - 특정 사용자의 대기중인 트리거 조회
+    @triggers_bp.route('/user/<user_id>/pending', methods=['GET'])
+    def get_pending_trigger_by_user(user_id):
+        try:
+            # 대기중인 트리거만 조회 (하나만 허용)
+            pending_trigger = Trigger.query.filter_by(user_id=user_id, status='pending').first()
+            
+            if pending_trigger:
+                logger.info(f"✅ 사용자 ID {user_id}의 대기중인 트리거 조회 성공")
+                return jsonify({
+                    'success': True,
+                    'data': pending_trigger.to_dict()
+                }), 200
+            else:
+                logger.info(f"ℹ️ 사용자 ID {user_id}의 대기중인 트리거 없음")
+                return jsonify({
+                    'success': True,
+                    'data': None
+                }), 200
+        except Exception as e:
+            logger.error(f"❌ 사용자 ID {user_id} 대기중인 트리거 조회 실패: {e}")
             return jsonify({
                 'success': False,
                 'error': str(e)
@@ -79,8 +105,16 @@ def init_triggers_routes(db, Trigger):
         try:
             data = request.get_json()
             
+            # 디버깅: 받은 데이터 로그
+            logger.info(f"🔍 DEBUG: 받은 트리거 생성 데이터: {data}")
+            logger.info(f"🔍 DEBUG: 데이터 타입: {type(data)}")
+            if data:
+                for key, value in data.items():
+                    logger.info(f"🔍 DEBUG: {key} = {value} (type: {type(value)})")
+            
             # 필수 데이터 검증
             if not data:
+                logger.error("❌ No data provided")
                 return jsonify({
                     'success': False,
                     'error': 'No data provided'
@@ -111,13 +145,35 @@ def init_triggers_routes(db, Trigger):
                         'error': 'Invalid last_checked format. Use ISO format'
                     }), 400
             
+            # trigger_date 처리
+            trigger_date = None
+            if data.get('trigger_date'):
+                try:
+                    trigger_date = datetime.strptime(data['trigger_date'], '%Y-%m-%d').date()
+                except ValueError:
+                    return jsonify({
+                        'success': False,
+                        'error': 'Invalid trigger_date format. Use YYYY-MM-DD'
+                    }), 400
+
+            # 기존 pending 트리거가 있는지 확인 (하나만 허용)
+            existing_pending = Trigger.query.filter_by(user_id=data.get('user_id'), status='pending').first()
+            if existing_pending:
+                return jsonify({
+                    'success': False,
+                    'error': 'User already has a pending trigger. Only one pending trigger allowed per user.'
+                }), 400
+
             # 새 트리거 생성
             new_trigger = Trigger(
                 user_id=data.get('user_id'),
                 trigger_type=data.get('trigger_type'),
+                trigger_date=trigger_date,
                 trigger_value=data.get('trigger_value'),
+                description=data.get('description'),
                 last_checked=last_checked,
-                is_triggered=data.get('is_triggered', False)
+                is_triggered=data.get('is_triggered', False),
+                status=data.get('status', 'pending')
             )
             
             db.session.add(new_trigger)

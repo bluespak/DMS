@@ -13,15 +13,17 @@ class TestUserInfoAPI(BaseTestCase):
     
     def test_get_all_users_empty(self):
         """빈 사용자 목록 조회 테스트"""
-        response = self.client.get('/api/userinfo')
+        response = self.client.get('/api/users')
         self.assertEqual(response.status_code, 200)
         
         data = json.loads(response.data)
-        self.assertEqual(len(data), 0)
+        self.assertTrue(data.get('success'))
+        self.assertEqual(len(data.get('data', [])), 0)
     
     def test_create_user_success(self):
         """사용자 생성 성공 테스트"""
         user_data = {
+            'user_id': 'john.doe.001',  # user_id 필드 추가
             'LastName': 'Doe',
             'FirstName': 'John',
             'Email': 'john@example.com',

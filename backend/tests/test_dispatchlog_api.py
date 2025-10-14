@@ -19,7 +19,7 @@ class TestDispatchLogAPI(BaseTestCase):
             'DOB': '1990-01-01'
         }
         
-        user_response = self.client.post('/api/userinfo',
+        user_response = self.client.post('/api/users',
                                        data=json.dumps(user_data),
                                        content_type='application/json')
         

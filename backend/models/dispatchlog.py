@@ -3,6 +3,7 @@ def create_dispatchlog_model(db):
     
     class DispatchLog(db.Model):
         __tablename__ = 'dispatch_log'
+        __table_args__ = {'extend_existing': True}
         id = db.Column(db.Integer, primary_key=True)
         will_id = db.Column(db.Integer, db.ForeignKey('wills.id'), nullable=False)
         recipient_id = db.Column(db.Integer, db.ForeignKey('recipients.id'), nullable=False)

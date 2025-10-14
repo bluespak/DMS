@@ -8,7 +8,7 @@ will_bp = Blueprint('will', __name__, url_prefix='/api/wills')
 # 로거 설정
 logger = logging.getLogger(__name__)
 
-def init_will_routes(db, Will):
+def init_will_routes(db, Will, Recipient):
     """Will 라우트를 초기화하고 모델을 주입"""
     
     # 1. GET /api/wills - 모든 유언장 조회
@@ -54,7 +54,7 @@ def init_will_routes(db, Will):
                 'error': str(e)
             }), 500
 
-    # 3. POST /api/wills - 신규 유언장 생성
+    # 3. POST /api/wills - 신규 유언장 생성 (recipients 포함)
     @will_bp.route('', methods=['POST'])
     def create_will():
         try:
@@ -83,13 +83,36 @@ def init_will_routes(db, Will):
             )
             
             db.session.add(new_will)
+            db.session.flush()  # ID를 가져오기 위해 flush
+            
+            # Recipients 생성 (있는 경우)
+            created_recipients = []
+            recipients_data = data.get('recipients', [])
+            
+            if recipients_data and isinstance(recipients_data, list):
+                for recipient_data in recipients_data:
+                    if recipient_data.get('email'):
+                        new_recipient = Recipient(
+                            will_id=new_will.id,
+                            recipient_name=recipient_data.get('name', ''),
+                            recipient_email=recipient_data.get('email')
+                        )
+                        db.session.add(new_recipient)
+                        created_recipients.append(new_recipient)
+            
             db.session.commit()
             
-            logger.info(f"✅ 신규 유언장 생성 성공: ID {new_will.id}")
+            logger.info(f"✅ 신규 유언장 생성 성공: ID {new_will.id}, Recipients: {len(created_recipients)}명")
+            
+            # 응답 데이터 구성
+            response_data = new_will.to_dict()
+            if created_recipients:
+                response_data['recipients'] = [recipient.to_dict() for recipient in created_recipients]
+            
             return jsonify({
                 'success': True,
-                'data': new_will.to_dict(),
-                'message': 'Will created successfully'
+                'data': response_data,
+                'message': f'Will created successfully with {len(created_recipients)} recipients'
             }), 201
             
         except Exception as e:

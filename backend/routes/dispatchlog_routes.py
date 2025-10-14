@@ -8,7 +8,7 @@ dispatchlog_bp = Blueprint('dispatchlog', __name__, url_prefix='/api/dispatch-lo
 # 로거 설정
 logger = logging.getLogger(__name__)
 
-def init_dispatchlog_routes(db, DispatchLog):
+def init_dispatchlog_routes(db, DispatchLog, Recipient=None):
     """DispatchLog 라우트를 초기화하고 모델을 주입"""
     
     # 1. GET /api/dispatch-logs - 모든 발송 로그 조회
@@ -30,12 +30,29 @@ def init_dispatchlog_routes(db, DispatchLog):
                 'error': str(e)
             }), 500
 
-    # 2. GET /api/dispatch-logs/will/<will_id> - 특정 유언장의 발송 로그들 조회
+    # 2. GET /api/dispatch-logs/will/<will_id> - 특정 유언장의 발송 로그들 조회 (수신자 정보 포함)
     @dispatchlog_bp.route('/will/<int:will_id>', methods=['GET'])
     def get_logs_by_will(will_id):
         try:
-            logs = DispatchLog.query.filter_by(will_id=will_id).all()
-            logs_list = [log.to_dict() for log in logs]
+            if Recipient:
+                # JOIN 쿼리로 수신자 정보와 함께 조회
+                logs_with_recipients = db.session.query(DispatchLog, Recipient)\
+                    .join(Recipient, DispatchLog.recipient_id == Recipient.id)\
+                    .filter(DispatchLog.will_id == will_id)\
+                    .all()
+                
+                logs_list = []
+                for log, recipient in logs_with_recipients:
+                    log_dict = log.to_dict()
+                    log_dict['recipient_name'] = recipient.recipient_name
+                    log_dict['recipient_email'] = recipient.recipient_email
+                    log_dict['created_at'] = log.sent_at.isoformat() if log.sent_at else None
+                    logs_list.append(log_dict)
+            else:
+                # Recipient 모델이 없는 경우 기본 조회
+                logs = DispatchLog.query.filter_by(will_id=will_id).all()
+                logs_list = [log.to_dict() for log in logs]
+            
             logger.info(f"✅ 유언장 ID {will_id}의 발송 로그 조회 성공: {len(logs_list)}개")
             return jsonify({
                 'success': True,

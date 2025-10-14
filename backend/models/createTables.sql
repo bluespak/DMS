@@ -5,6 +5,7 @@
 --   Sta: Standard (스탠다드) - 기본 등급, 비활성 기간 90-180일
 CREATE TABLE UserInfo (
   id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id VARCHAR(50) UNIQUE NOT NULL,  -- 새로운 사용자 ID 필드
   email VARCHAR(255) UNIQUE NOT NULL,
   lastname VARCHAR(100),
   firstname VARCHAR(100),
@@ -22,12 +23,12 @@ CREATE TABLE UserInfo (
 -- lastmodified_at: 자동 업데이트되는 수정 시간
 CREATE TABLE wills (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  user_id INT NOT NULL,                -- 사용자 외래키 (1:1 관계)
+  user_id VARCHAR(50) NOT NULL,        -- 사용자 ID 외래키 (1:1 관계)
   subject VARCHAR(255),                -- 유언서 제목
   body TEXT,                          -- 유언서 본문
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   lastmodified_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES UserInfo(id),
+  FOREIGN KEY (user_id) REFERENCES UserInfo(user_id),
   INDEX idx_wills_user_id (user_id)
 );
 
@@ -55,12 +56,12 @@ CREATE TABLE recipients (
 --   manual: 수동 트리거 (사용자가 직접 활성화)
 CREATE TABLE triggers (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  user_id INT NOT NULL,  
+  user_id VARCHAR(50) NOT NULL,        -- 사용자 ID 외래키
   trigger_type ENUM('inactivity', 'date', 'manual') NOT NULL,
   trigger_value VARCHAR(255),          -- 예: '30'일, '2025-12-01', 'Family request'
   last_checked DATETIME,
   is_triggered BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY (user_id) REFERENCES UserInfo(id),
+  FOREIGN KEY (user_id) REFERENCES UserInfo(user_id),
   INDEX idx_triggers_user_id (user_id)
 );
 

@@ -18,7 +18,7 @@ class TestTriggersAPI(BaseTestCase):
             'Grade': 'A'
         }
         
-        response = self.client.post('/api/userinfo',
+        response = self.client.post('/api/users',
                                   data=json.dumps(user_data),
                                   content_type='application/json')
         self.test_user = json.loads(response.data)

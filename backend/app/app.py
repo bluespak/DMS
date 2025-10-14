@@ -44,6 +44,8 @@ from dispatchlog_routes import init_dispatchlog_routes
 from system_routes import init_system_routes
 from test_routes import init_test_routes
 from home_routes import init_home_routes
+from frontend_log_routes import init_frontend_log_routes
+from auth_routes import init_auth_routes
 
 # 모델 생성
 UserInfo = create_userinfo_model(db)
@@ -110,13 +112,17 @@ def not_found(error):
 
 # 라우트 초기화 및 등록
 app.register_blueprint(init_userinfo_routes(db, UserInfo))
-app.register_blueprint(init_will_routes(db, Will))
+app.register_blueprint(init_will_routes(db, Will, Recipient))
 app.register_blueprint(init_recipients_routes(db, Recipient))
 app.register_blueprint(init_triggers_routes(db, Trigger))
-app.register_blueprint(init_dispatchlog_routes(db, DispatchLog))
+app.register_blueprint(init_dispatchlog_routes(db, DispatchLog, Recipient))
 app.register_blueprint(init_system_routes(db))
 app.register_blueprint(init_test_routes())
 app.register_blueprint(init_home_routes())
+app.register_blueprint(init_auth_routes(db, UserInfo))
+
+# Frontend 로그 라우트 초기화
+init_frontend_log_routes(app)
 
 # 앱 시작 시 데이터베이스 연결 확인
 with app.app_context():

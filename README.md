@@ -1,6 +1,6 @@
-# DMS (Digital Message System)
-> 🔒 **Digital Will & Message Management System**  
-> A comprehensive backend system for managing digital wills, recipients, triggers, and dispatch logs using Flask and MySQL.
+# DMS (Dead Man's Switch)
+> ⚡ **Digital Memory Service - Automated Message Dispatch System**  
+> A comprehensive full-stack system for managing digital wills, automated triggers, and secure message delivery using React + Flask + MySQL.
 
 ## 📋 Table of Contents
 - [Overview](#overview)
@@ -11,6 +11,7 @@
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [API Documentation](#api-documentation)
+- [Frontend Guide](#frontend-guide)
 - [Testing](#testing)
 - [Database Schema](#database-schema)
 - [Usage Examples](#usage-examples)
@@ -19,16 +20,18 @@
 
 ## 🎯 Overview
 
-DMS is a robust backend system designed to manage digital wills and automated message dispatching. The system allows users to create digital wills, manage recipients, set up triggers for message delivery, and track dispatch logs.
+DMS (Dead Man's Switch) is a full-stack digital legacy management system that automatically sends pre-written messages to designated recipients when a user becomes inactive for a specified period. Think of it as a "digital failsafe" for important communications.
 
 ### Key Capabilities
-- **Digital Will Management**: Create, update, and manage digital wills
-- **Recipient Management**: Maintain recipient lists with contact information
-- **Trigger System**: Set up automated triggers for message dispatch (time-based, event-based)
-- **Dispatch Logging**: Comprehensive tracking of all message dispatches
-- **User Management**: Complete user lifecycle management with authentication
-- **RESTful API**: Clean, well-documented REST API endpoints
-- **Comprehensive Testing**: Full test coverage with web-based test interface
+- **🏠 User-Friendly Interface**: React-based responsive web application
+- **🔐 Secure Authentication**: JWT-based login system with session management
+- **📜 Digital Will Management**: Create, edit, and manage digital wills with rich content
+- **📧 Smart Recipients**: Manage recipient lists with email validation
+- **⚡ Intelligent Triggers**: Automated inactivity detection with customizable timeouts
+- **📨 Dispatch Tracking**: Comprehensive logging of all message deliveries
+- **👥 User Management**: Complete user lifecycle with admin panel
+- **🛡️ Security First**: Encrypted data, secure API endpoints, comprehensive logging
+- **🧪 Full Test Coverage**: Automated testing with API documentation
 
 ## 🏗️ Architecture
 
@@ -82,66 +85,111 @@ DMS/
 
 ## 🛠️ Tech Stack
 
+### Frontend
+- **React 18** - Modern JavaScript library for building user interfaces
+- **Create React App** - Zero-configuration React development environment
+- **Axios** - HTTP client for API communication
+- **CSS3** - Modern styling with responsive design
+- **React Hooks** - Functional component state management
+
 ### Backend Framework
 - **Flask 3.1.2** - Python web framework
 - **Flask-SQLAlchemy 3.1.1** - ORM and database toolkit
 - **Flask-CORS 6.0.1** - Cross-Origin Resource Sharing support
 - **PyMySQL 1.1.1** - MySQL database connector
+- **cryptography** - Database authentication encryption
+
+### Authentication & Security
+- **JWT (JSON Web Tokens)** - Stateless authentication
+- **Flask-JWT-Extended** - JWT integration for Flask
+- **Password Hashing** - Secure password storage
+- **CORS Configuration** - Cross-origin request handling
 
 ### Database
 - **MySQL 8.0.42** - Primary database (AWS RDS)
 - **SQLite** - Testing database (in-memory)
+- **SQLAlchemy ORM** - Object-relational mapping
 
 ### Testing & Development
 - **unittest** - Python testing framework
 - **Custom Test Runner** - Web-based test execution interface
 - **SQLAlchemy Factory Pattern** - Dynamic model creation
 - **Blueprint Architecture** - Modular route organization
+- **ESLint** - JavaScript code quality analysis
 
-### Infrastructure
-- **AWS RDS** - Managed MySQL database service
+### Infrastructure & DevOps
+- **AWS RDS** - Managed MySQL database service  
 - **Environment Variables** - Secure configuration management
-- **Logging** - Comprehensive application logging
+- **Comprehensive Logging** - Application and error logging
+- **Development Proxy** - React dev server to Flask backend
 
 ## 📁 Project Structure
 
 ```
 DMS/
-├── README.md                    # This file
-├── backend/
-│   ├── .env                     # Environment configuration
-│   ├── config.py                # Application configuration
-│   ├── requirements.txt         # Python dependencies
-│   ├── app/
-│   │   └── app.py              # Main Flask application
-│   ├── model/                   # Database Models
-│   │   ├── userinfo.py         # User model (✅ Complete)
-│   │   ├── will.py             # Will model (🏗️ In progress)
-│   │   ├── recipients.py       # Recipients model (🏗️ In progress)
-│   │   ├── trigger.py          # Trigger model (🏗️ In progress)
-│   │   ├── dispatchlog.py      # Dispatch log model (🏗️ In progress)
-│   │   ├── createDB.sql        # Database schema
-│   │   └── createTables.sql    # Table creation scripts
-│   ├── route/                   # API Routes (Blueprint-based)
-│   │   ├── userinfo_routes.py  # User management API (✅ Complete)
-│   │   ├── will_routes.py      # Will management API (🏗️ In progress)
-│   │   ├── recipients_routes.py # Recipients API (🏗️ In progress)
-│   │   ├── triggers_routes.py  # Triggers API (🏗️ In progress)
-│   │   ├── dispatchlog_routes.py # Dispatch logs API (🏗️ In progress)
-│   │   ├── home_routes.py      # Home page routes
-│   │   ├── test_routes.py      # Test interface routes
-│   │   └── system_routes.py    # System utility routes
-│   └── tests/                   # Comprehensive Test Suite
-│       ├── simple_test_runner.py # Custom test runner
-│       ├── test_config.py      # Test configuration
-│       ├── test_userinfo_api.py # UserInfo API tests (✅ 11/11 passing)
-│       ├── test_will_api.py    # Will API tests (🏗️ In progress)
-│       ├── test_recipients_api.py # Recipients API tests (🏗️ In progress)
-│       ├── test_triggers_api.py # Triggers API tests (🏗️ In progress)
-│       └── test_dispatchlog_api.py # Dispatch log API tests (🏗️ In progress)
-├── frontend/                    # Frontend Application (Future)
-└── doc/
-    └── api-documentation.html   # Interactive API documentation
+├── README.md                    # Project documentation
+├── doc/                         # Documentation files
+│   ├── API_Documentation_v2.md  # Comprehensive API documentation
+│   ├── api-documentation.html   # Interactive API documentation
+│   └── API_Testing_Guide.md     # Testing guidelines
+├── frontend/                    # React Frontend Application
+│   ├── package.json            # Node.js dependencies
+│   ├── public/
+│   │   └── index.html          # Main HTML template
+│   ├── src/
+│   │   ├── App.js              # Main React component
+│   │   ├── App.css             # Global styles
+│   │   ├── index.js            # React entry point
+│   │   ├── components/         # React components
+│   │   │   ├── DeadManSwitchHome.js # Main dashboard
+│   │   │   ├── HomePage.js     # Home page component
+│   │   │   ├── RegisterPage.js # User registration
+│   │   │   ├── WillEditor.js   # Will creation/editing
+│   │   │   └── UserProfilePage.js # User profile management
+│   │   ├── config/             # Frontend configuration
+│   │   ├── services/           # API service layer
+│   │   └── utils/              # Utility functions
+│   └── logs/                   # Frontend logging
+└── backend/                    # Flask Backend API
+    ├── .env                    # Environment configuration
+    ├── config.py               # Application configuration
+    ├── requirements.txt        # Python dependencies
+    ├── app/
+    │   └── app.py             # Main Flask application
+    ├── models/                 # Database Models (SQLAlchemy)
+    │   ├── userinfo.py        # User model (✅ Complete)
+    │   ├── will.py            # Will model (✅ Complete)
+    │   ├── recipients.py      # Recipients model (✅ Complete)
+    │   ├── trigger.py         # Trigger model (✅ Complete) 
+    │   ├── dispatchlog.py     # Dispatch log model (✅ Complete)
+    │   ├── createDB.sql       # Database schema
+    │   └── createTables.sql   # Table creation scripts
+    ├── routes/                 # API Routes (Blueprint Architecture)
+    │   ├── auth_routes.py     # Authentication API (✅ Complete)
+    │   ├── userinfo_routes.py # User management API (✅ Complete)
+    │   ├── will_routes.py     # Will management API (✅ Complete)
+    │   ├── recipients_routes.py # Recipients API (✅ Complete)
+    │   ├── triggers_routes.py # Triggers API (✅ Complete)
+    │   ├── dispatchlog_routes.py # Dispatch logs API (✅ Complete)
+    │   ├── home_routes.py     # Home page routes (✅ Complete)
+    │   ├── test_routes.py     # Test interface routes (✅ Complete)
+    │   └── system_routes.py   # System utility routes (✅ Complete)
+    ├── tests/                  # Comprehensive Test Suite
+    │   ├── simple_test_runner.py # Custom test runner
+    │   ├── test_config.py     # Test configuration
+    │   ├── test_auth_api.py   # Authentication API tests (✅ Complete)
+    │   ├── test_userinfo_api.py # User API tests (✅ Updated)
+    │   ├── test_will_api.py   # Will API tests (🔄 Needs update)
+    │   ├── test_recipients_api.py # Recipients API tests (🔄 Needs update)
+    │   ├── test_triggers_api.py # Triggers API tests (🔄 Needs update)
+    │   └── test_dispatchlog_api.py # Dispatch logs API tests (🔄 Needs update)
+    ├── utils/                  # Utility modules
+    │   ├── log_manager.py     # Logging management
+    │   └── logging_config.py  # Logging configuration
+    └── logs/                   # Application logging
+        ├── data/              # Data operation logs
+        ├── server/            # Server logs
+        └── system/            # System logs
 ```
 
 ## 🚀 Installation
