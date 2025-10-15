@@ -106,10 +106,10 @@ def init_auth_routes(db, UserInfo):
                 'token': token,
                 'user': {
                     'user_id': user.user_id,
-                    'email': user.Email,
-                    'firstname': user.FirstName,
-                    'lastname': user.LastName,
-                    'grade': user.Grade
+                    'email': user.email,
+                    'firstname': user.firstname,
+                    'lastname': user.lastname,
+                    'grade': user.grade
                 }
             })
             
@@ -143,7 +143,7 @@ def init_auth_routes(db, UserInfo):
             
             # 중복 사용자 확인
             existing_user = db.session.query(UserInfo).filter(
-                (UserInfo.user_id == user_id) | (UserInfo.Email == email)
+                (UserInfo.user_id == user_id) | (UserInfo.email == email)
             ).first()
             
             if existing_user:
@@ -165,10 +165,10 @@ def init_auth_routes(db, UserInfo):
             new_user = UserInfo(
                 user_id=user_id,
                 password_hash=hashed_password,
-                Email=email,
-                FirstName=firstname,
-                LastName=lastname,
-                Grade=grade,
+                email=email,
+                firstname=firstname,
+                lastname=lastname,
+                grade=grade,
                 DOB=datetime.strptime(dob, '%Y-%m-%d').date() if dob else None
             )
             

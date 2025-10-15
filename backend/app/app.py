@@ -153,4 +153,11 @@ if __name__ == '__main__':
     db_uri = app.config.get('SQLALCHEMY_DATABASE_URI', 'Not configured')
     masked_uri = mask_db_uri(db_uri)
     logger.info(f"데이터베이스 URI: {masked_uri}")
-    app.run(debug=True)
+    
+    # Docker 환경에서는 0.0.0.0에 바인딩
+    import os
+    host = os.environ.get('FLASK_RUN_HOST', '0.0.0.0')
+    port = int(os.environ.get('FLASK_RUN_PORT', '5000'))
+    logger.info(f"Flask 서버 시작: {host}:{port}")
+    
+    app.run(debug=True, host=host, port=port)

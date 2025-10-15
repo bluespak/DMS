@@ -1,0 +1,92 @@
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: dms_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${DB_NAME:-dmsdb}
+      MYSQL_USER: ${DB_USER:-elvin}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-elvinpass}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backend/models/createTables.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - dms_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Flask Backend API
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dms_backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    environment:
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5000
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=${DB_USER:-elvin}
+      - DB_PASSWORD=${DB_PASSWORD:-elvinpass}
+      - DB_NAME=${DB_NAME:-dmsdb}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - dms_network
+    volumes:
+      - ./backend/logs:/app/logs
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:5000}
+    container_name: dms_frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - backend
+    networks:
+      - dms_network
+
+  # Nginx Reverse Proxy (Optional - for production)
+  nginx:
+    image: nginx:alpine
+    container_name: dms_nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - dms_network
+    profiles:
+      - production
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  dms_network:
+    driver: bridge

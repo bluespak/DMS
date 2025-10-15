@@ -513,13 +513,52 @@ python simple_test_runner.py
 4. Register blueprint in `app/app.py`
 5. Update test runner to include new tests
 
-## 📊 Current Status
+## � Docker Deployment
+
+### Quick Start with Docker Compose
+```bash
+# 1. 환경 설정
+cp .env.example .env
+# .env 파일을 실제 환경에 맞게 수정
+
+# 2. 개발 환경 배포
+./deploy.sh dev
+
+# 3. 프로덕션 환경 배포
+./deploy.sh prod
+```
+
+### Manual Docker Commands
+```bash
+# 서비스 빌드 및 실행
+docker-compose up -d
+
+# 로그 확인
+docker-compose logs -f
+
+# 서비스 중지
+docker-compose down
+```
+
+### Cafe24 리눅스 서버 배포
+자세한 배포 가이드는 [CAFE24_DEPLOY.md](./CAFE24_DEPLOY.md)를 참조하세요.
+
+**주요 특징:**
+- 🐳 **Docker Compose**: 완전한 컨테이너화 환경
+- 🏗️ **Multi-stage Build**: 최적화된 프로덕션 이미지
+- 🔄 **Health Checks**: 자동 서비스 상태 모니터링
+- 🌐 **Nginx Reverse Proxy**: 프로덕션용 로드 밸런싱
+- 📊 **Volume Persistence**: 데이터베이스 영구 저장
+- 🔧 **Environment Configuration**: 환경별 설정 관리
+
+## �📊 Current Status
 
 ### ✅ Production Ready
-- **UserInfo API**: Complete CRUD operations with full test coverage
-- **Database Integration**: AWS RDS MySQL connection established
+- **UserInfo API**: Complete CRUD operations with full test coverage (MySQL)
+- **Database Integration**: AWS RDS MySQL + Docker MySQL support
 - **Test Infrastructure**: Web-based testing interface operational
 - **Documentation**: Comprehensive API documentation available
+- **Docker Deployment**: Complete containerization with Cafe24 support
 
 ### 🏗️ In Development
 - **Will Management API**: Routes implemented, tests need debugging
@@ -528,11 +567,11 @@ python simple_test_runner.py
 - **Dispatch Log API**: Routes implemented, tests need debugging
 
 ### 🎯 Next Steps
-1. **Debug API Tests**: Resolve 404 errors in non-UserInfo APIs
-2. **Complete API Implementation**: Ensure all APIs work like UserInfo
-3. **Frontend Development**: Create React/Vue.js interface
-4. **Authentication**: Implement JWT-based authentication
-5. **Deployment**: Configure production deployment
+1. **Complete API Testing**: Update all API tests to use MySQL test DB
+2. **SSL/HTTPS Setup**: Configure secure connections for production
+3. **Monitoring**: Add application performance monitoring
+4. **CI/CD Pipeline**: Implement automated deployment
+5. **Load Testing**: Performance optimization for production
 
 ## 🤝 Contributing
 
