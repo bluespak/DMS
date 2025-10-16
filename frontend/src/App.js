@@ -295,7 +295,7 @@ function App() {
       setLoading(true);
       setError(null);
       
-      console.log(`📜 ${user.FirstName} ${user.LastName}의 Will 목록 조회 시작...`);
+  console.log(`📜 ${user.firstname} ${user.lastname}의 Will 목록 조회 시작...`);
       
       const response = await willAPI.getWillsByUserId(user.user_id);
       console.log('✅ Will 응답:', response);
@@ -321,7 +321,7 @@ function App() {
       
     } catch (err) {
       console.error('❌ Will 조회 실패:', err);
-      setError(`${user.FirstName} ${user.LastName}의 Will 정보를 불러오는데 실패했습니다.`);
+  setError(`${user.firstname} ${user.lastname}의 Will 정보를 불러오는데 실패했습니다.`);
     } finally {
       setLoading(false);
     }
@@ -342,7 +342,7 @@ function App() {
       setLoading(true);
       setError(null);
       
-      console.log(`⏰ ${user.FirstName} ${user.LastName}의 트리거 목록 조회 시작...`);
+  console.log(`⏰ ${user.firstname} ${user.lastname}의 트리거 목록 조회 시작...`);
       
       const response = await triggerAPI.getTriggersByUserId(user.user_id);
       console.log('✅ 트리거 응답:', response);
@@ -367,7 +367,7 @@ function App() {
     } catch (err) {
       console.error('❌ 트리거 조회 실패:', err);
       const errorMessage = err.response?.data?.message || err.message || '네트워크 오류가 발생했습니다.';
-      setError(`${user.FirstName} ${user.LastName}의 트리거 정보를 불러오는데 실패했습니다. 오류: ${errorMessage}`);
+  setError(`${user.firstname} ${user.lastname}의 트리거 정보를 불러오는데 실패했습니다. 오류: ${errorMessage}`);
       
       // 오류가 발생해도 모달은 열어서 사용자가 새 트리거를 추가할 수 있도록 함
       setUserTriggers([]);
@@ -724,7 +724,7 @@ function App() {
         }
       });
     }
-    
+    // loading시 사용자 목록 자동 로드 (개발용, 필요시 활성화)
     fetchUsers();
     
     // 개발 모드에서 페이지네이션 설정 정보 출력
@@ -912,11 +912,6 @@ function App() {
               <p className="admin-description">
                 💀 사용자 생존 상태 모니터링 및 자동 메시지 전송 관리
               </p>
-              <div className="system-info">
-                <span className="badge">🌐 Frontend v1.0</span>
-                <span className="badge">⚡ React + API</span>
-                <span className="badge">📊 실시간 데이터</span>
-              </div>
             </div>
           
 
@@ -942,8 +937,8 @@ function App() {
                   <label>이름:</label>
                   <input
                     type="text"
-                    name="FirstName"
-                    value={editingUser.FirstName}
+                    name="firstname"
+                    value={editingUser.firstname}
                     onChange={handleEditInputChange}
                     placeholder="이름을 입력하세요"
                   />
@@ -953,8 +948,8 @@ function App() {
                   <label>성:</label>
                   <input
                     type="text"
-                    name="LastName"
-                    value={editingUser.LastName}
+                    name="lastname"
+                    value={editingUser.lastname}
                     onChange={handleEditInputChange}
                     placeholder="성을 입력하세요"
                   />
@@ -964,8 +959,8 @@ function App() {
                   <label>이메일:</label>
                   <input
                     type="email"
-                    name="Email"
-                    value={editingUser.Email}
+                    name="email"
+                    value={editingUser.email}
                     onChange={handleEditInputChange}
                     placeholder="이메일을 입력하세요"
                   />
@@ -975,8 +970,8 @@ function App() {
                   <label>생년월일:</label>
                   <input
                     type="date"
-                    name="DOB"
-                    value={editingUser.DOB}
+                    name="dob"
+                    value={editingUser.dob}
                     onChange={handleEditInputChange}
                   />
                 </div>
@@ -984,8 +979,8 @@ function App() {
                 <div className="form-group">
                   <label>등급:</label>
                   <select
-                    name="Grade"
-                    value={editingUser.Grade}
+                    name="grade"
+                    value={editingUser.grade}
                     onChange={handleEditInputChange}
                   >
                     <option value="Sta">Standard</option>
@@ -998,7 +993,7 @@ function App() {
               <div className="form-actions">
                 <button 
                   onClick={updateUser} 
-                  disabled={loading || !editingUser.FirstName || !editingUser.LastName || !editingUser.Email}
+                  disabled={loading || !editingUser.firstname || !editingUser.lastname || !editingUser.email}
                   className="save-button"
                 >
                   💾 수정 저장
@@ -1019,7 +1014,7 @@ function App() {
             <div className="modal-overlay">
               <div className="will-modal">
                 <div className="modal-header">
-                  <h3>📜 {currentWillUser.FirstName} {currentWillUser.LastName}의 Will 정보</h3>
+                  <h3>📜 {currentWillUser.firstname} {currentWillUser.lastname}의 Will 정보</h3>
                   <button 
                     onClick={closeWillModal}
                     className="close-button"
@@ -1038,7 +1033,7 @@ function App() {
                       {selectedUserWills.map((will, index) => (
                         <div key={will.id || index} className="will-item">
                           <div className="will-header">
-                            <h4>📋 {currentWillUser?.FirstName} {currentWillUser?.LastName}'s Will</h4>
+                            <h4>📋 {currentWillUser?.firstname} {currentWillUser?.lastname}'s Will</h4>
                             <div className="will-meta">
                               <span className="will-date">📅 {new Date(will.created_at).toLocaleDateString()}</span>
                               <span className={`status-badge status-${will.status?.toLowerCase() || 'pending'}`}>
@@ -1151,7 +1146,7 @@ function App() {
             <div className="modal-overlay">
               <div className="trigger-modal">
                 <div className="modal-header">
-                  <h3>⏰ {currentTriggerUser.FirstName} {currentTriggerUser.LastName}의 트리거 관리</h3>
+                  <h3>⏰ {currentTriggerUser.firstname} {currentTriggerUser.lastname}의 트리거 관리</h3>
                   <button 
                     onClick={closeTriggerModal}
                     className="close-button"
@@ -1228,7 +1223,7 @@ function App() {
                 <div className="modal-header">
                   <h3>
                     {editingTrigger.trigger_id ? '✏️ 트리거 수정' : '➕ 새 트리거 추가'}
-                    <span className="user-info"> - {currentTriggerUser.FirstName} {currentTriggerUser.LastName}</span>
+                    <span className="user-info"> - {currentTriggerUser.firstname} {currentTriggerUser.lastname}</span>
                   </h3>
                   <button 
                     onClick={closeAddTriggerModal}
@@ -1351,22 +1346,22 @@ function App() {
                   
                   {/* 사용자 리스트 */}
                   <div className="users-table">
-                    {currentUsers.map((user, index) => (
+                    { currentUsers.map((user, index) => (
                       <div key={user.user_id || user.id || index} className="table-row user-row">
                         <div className="user-info">
                           <span className="user-id">#{user.id}</span>
                         </div>
                         <div className="col-name">
                           <div className="user-name">
-                            <strong>{user.FirstName} {user.LastName}</strong>
+                            <strong>{user.firstname} {user.lastname}</strong>
                           </div>
                         </div>
                         <div className="col-email">
-                          <span className="user-email">📧 {user.Email}</span>
+                          <span className="user-email">📧 {user.email}</span>
                         </div>
                         <div className="col-grade">
-                          <span className={`grade-badge grade-${user.Grade.toLowerCase()}`}>
-                            🏆 {user.Grade}
+                          <span className={`grade-badge grade-${user.grade ? user.grade.toLowerCase() : ''}`}> 
+                            🏆 {user.grade === 'Pre' ? 'Premium' : user.grade === 'Gol' ? 'Gold' : user.grade === 'Sta' ? 'Standard' : user.grade}
                           </span>
                         </div>
                         <div className="col-dob">
@@ -1402,7 +1397,7 @@ function App() {
                               ✏️
                             </button>
                             <button 
-                              onClick={() => deleteUser(user.user_id, `${user.FirstName} ${user.LastName}`)}
+                              onClick={() => deleteUser(user.user_id, `${user.firstname} ${user.lastname}`)}
                               className="delete-button-small"
                               disabled={loading}
                               title="사용자 삭제"

@@ -13,7 +13,7 @@ services:
       - "${DB_PORT:-3306}:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./backend/models/createTables.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/models/createDB.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - dms_network
     healthcheck:

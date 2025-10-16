@@ -2,8 +2,16 @@
 import axios from 'axios';
 
 // Axios 인스턴스 생성
+/*
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL || '/api',
+  timeout: 10000,
+  withCredentials: true,
+});
+*/
+// Axios 인스턴스 생성
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL,
   timeout: 10000,
   withCredentials: true,
 });

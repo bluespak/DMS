@@ -1,5 +1,5 @@
 -- 데이터베이스 생성
-CREATE DATABASE dmsdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS dmsdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 생성된 DB 사용
 USE dmsdb;
@@ -50,12 +50,20 @@ CREATE TABLE recipients (
 CREATE TABLE triggers (
   id INT PRIMARY KEY AUTO_INCREMENT,
   user_id VARCHAR(50) NOT NULL,        -- 사용자 ID 외래키
-  trigger_type ENUM('inactivity', 'date', 'manual') NOT NULL,
+  trigger_type ENUM('inactivity', 'date', 'manual', 'email', 'sms', 'notification') NOT NULL,
   trigger_value VARCHAR(255),          -- 예: '30'일, '2025-12-01', 'Family request'
+  trigger_date DATE,
   last_checked DATETIME,
   is_triggered BOOLEAN DEFAULT FALSE,
+  status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+  description TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES UserInfo(user_id),
-  INDEX idx_triggers_user_id (user_id)
+  INDEX idx_triggers_user_id (user_id),
+  INDEX idx_triggers_status (status),
+  INDEX idx_triggers_date (trigger_date),
+  INDEX idx_triggers_created (created_at)
 );
 
 -- 발송 로그 테이블

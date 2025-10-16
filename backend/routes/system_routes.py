@@ -48,8 +48,7 @@ def init_system_routes(db):
             # 현재 파일에서 프로젝트 루트까지의 경로 계산
             current_dir = os.path.dirname(os.path.abspath(__file__))  # route 폴더
             backend_dir = os.path.dirname(current_dir)  # backend 폴더
-            project_root = os.path.dirname(backend_dir)  # DMS 프로젝트 루트
-            doc_path = os.path.join(project_root, 'doc', 'api-documentation.html')
+            doc_path = os.path.join(backend_dir, 'doc', 'api-documentation.html')
             
             logger.info(f"API 문서 경로: {doc_path}")
             logger.info(f"파일 존재 여부: {os.path.exists(doc_path)}")

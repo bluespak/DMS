@@ -207,9 +207,9 @@ def init_auth_routes(db, UserInfo):
             'message': '유효한 토큰입니다',
             'user': {
                 'user_id': current_user.user_id,
-                'email': current_user.Email,
-                'firstname': current_user.FirstName,
-                'lastname': current_user.LastName,
+                'email': current_user.email,
+                'firstname': current_user.firstname,
+                'lastname': current_user.lastname,
                 'grade': current_user.grade
             }
         })
