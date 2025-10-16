@@ -1,5 +1,7 @@
 // React 라이브러리를 가져옵니다
 import React, { useState, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // CSS 파일을 가져옵니다 (스타일링용)
 import './App.css';
@@ -17,7 +19,6 @@ import config from './config/config';
 // 로그 시스템을 가져옵니다
 import logger from './utils/logger';
 import './utils/logFileManager'; // 로그 파일 관리자 초기화
-import { logSender } from './services/api'; // API 로그 전송자
 
 // 홈페이지 컴포넌트를 가져옵니다
 import DeadManSwitchHome from './components/DeadManSwitchHome';
@@ -689,8 +690,6 @@ function App() {
 
   // 컴포넌트가 처음 렌더링될 때 실행
   useEffect(() => {
-    // API 로그 전송자와 logger 연결
-    logger.setApiLogSender(logSender);
     
     logger.system('info', 'DMS Frontend 애플리케이션 시작', {
       environment: process.env.NODE_ENV,
@@ -705,10 +704,6 @@ function App() {
       debugMode: config.app.debugMode
     });
     
-    logger.system('info', 'API 로그 전송 시스템 활성화', {
-      logSenderConnected: !!logSender,
-      serverLoggingEnabled: true
-    });
 
     // 저장된 토큰 확인 및 자동 로그인
     const savedToken = localStorage.getItem('authToken');
@@ -993,9 +988,9 @@ function App() {
                     value={editingUser.Grade}
                     onChange={handleEditInputChange}
                   >
-                    <option value="Standard">Standard</option>
-                    <option value="Gold">Gold</option>
-                    <option value="Premium">Premium</option>
+                    <option value="Sta">Standard</option>
+                    <option value="Gol">Gold</option>
+                    <option value="Pre">Premium</option>
                   </select>
                 </div>
               </div>
@@ -1488,9 +1483,11 @@ function App() {
           </div>
         )}
       </div>
+      {/* 기존 App 렌더링 코드 */}
+      <ToastContainer />
     </div>
   );
-}
+};
 
 // 이 컴포넌트를 다른 파일에서 사용할 수 있도록 내보냅니다
 export default App;

@@ -9,7 +9,7 @@ const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
     email: '',
     firstname: '',
     lastname: '',
-    grade: 'Standard',
+    grade: 'Sta', // 'Sta', 'Gol', 'Pre' 중 하나의 값이어야 합니다.
     DOB: ''
   });
   const [loading, setLoading] = useState(false);
@@ -46,6 +46,10 @@ const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
       setError('비밀번호는 최소 6자 이상이어야 합니다.');
       return;
     }
+
+    // 비밀번호 길이 확인
+    alert(formData.grade.value);
+    alert(formData.grade);
 
     setLoading(true);
     setError('');
@@ -194,9 +198,9 @@ const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
                 onChange={handleChange}
                 disabled={loading}
               >
-                <option value="Standard">Standard</option>
-                <option value="Gold">Gold</option>
-                <option value="Premium">Premium</option>
+                <option value="Sta">Standard</option>
+                <option value="Gol">Gold</option>
+                <option value="Pre">Premium</option>
               </select>
             </div>
             <div className="form-group">

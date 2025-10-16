@@ -15,7 +15,7 @@ from config import Config
 from utils.logging_config import setup_flask_logging, get_dms_logger
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # DMS 로깅 시스템 설정 - 서버 로그 사용
 dms_logger = setup_flask_logging(app)

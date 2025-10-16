@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import './LoginPage.css';
 import api from '../services/api';
+
 
 const LoginPage = ({ onLogin, onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -8,7 +10,7 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
     password: ''
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,12 +24,12 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
     e.preventDefault();
     
     if (!formData.user_id || !formData.password) {
-      setError('사용자 ID와 비밀번호를 모두 입력해주세요.');
+      toast.error('사용자 ID와 비밀번호를 모두 입력해주세요.');
       return;
     }
 
-    setLoading(true);
-    setError('');
+  setLoading(true);
+  // setError('');
 
     try {
       const response = await api.post('/api/auth/login', formData);
@@ -37,14 +39,18 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
         // 토큰을 localStorage에 저장
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        
+        toast.success('로그인 성공!');
         // 부모 컴포넌트에 로그인 성공 알림
         onLogin(data.user, data.token);
       } else {
-        setError(data.message || '로그인에 실패했습니다.');
+        toast.error(data.message || '로그인에 실패했습니다.');
       }
     } catch (err) {
-      setError('서버 연결 오류가 발생했습니다.');
+      if (err.response && err.response.status === 401) {
+        toast.error('아이디 또는 비밀번호가 올바르지 않습니다.');
+      } else {
+        toast.error('서버 연결 오류가 발생했습니다.');
+      }
       console.error('Login error:', err);
     } finally {
       setLoading(false);
@@ -60,11 +66,7 @@ const LoginPage = ({ onLogin, onSwitchToRegister }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
-          {error && (
-            <div className="error-message">
-              ❌ {error}
-            </div>
-          )}
+          {/* 에러 메시지 영역은 toast로 대체됨 */}
 
           <div className="form-group">
             <label htmlFor="user_id">사용자 ID</label>
