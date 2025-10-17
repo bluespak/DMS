@@ -1,3 +1,50 @@
+/* 발송 기록(DispatchLog) 리스트를 WillEditor(트리거)와 동일한 다크톤으로 적용 */
+.dispatch-log-list {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  color: #e8e8e8;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.dispatch-log-header {
+  color: #d4af37;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+}
+
+.dispatch-log-item {
+  background: rgba(255,255,255,0.05);
+  color: #e8e8e8;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  padding: 16px 12px;
+  transition: background 0.2s;
+}
+.dispatch-log-item:hover {
+  background: rgba(255,255,255,0.10);
+}
+
+.dispatch-log-label {
+  color: #d4af37;
+  font-weight: 500;
+}
+
+.dispatch-log-value {
+  color: #e8e8e8;
+}
+
+.dispatch-log-empty {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  color: #bbb;
+  text-align: center;
+  padding: 48px 0;
+  border-radius: 12px;
+}
 /* 네비게이션 헤더 스타일 - 햄버거 메뉴 */
 .nav-header {
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
@@ -1441,7 +1488,7 @@
   gap: 15px;
   padding: 8px 12px;
   margin-bottom: 8px;
-  background: #f8f9fa;
+  background: #1a1a1a;
   border-radius: 6px;
   border-left: 3px solid #007bff;
 }
@@ -1472,14 +1519,15 @@
   text-transform: uppercase;
 }
 
+
 .no-logs, .logs-loading {
   text-align: center;
-  color: #666;
+  color: #bbb;
   font-style: italic;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 6px;
-  border: 2px dashed #ddd;
+  padding: 48px 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  border-radius: 12px;
+  border: none;
 }
 
 .logs-loading {

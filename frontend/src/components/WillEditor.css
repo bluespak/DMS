@@ -4,7 +4,7 @@
   margin: 0 auto;
   padding: 20px;
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-  color: #222;
+  color: #e8e8e8;
   min-height: 100vh;
   font-family: 'Georgia', 'Times New Roman', serif;
 }
@@ -67,17 +67,24 @@
   font-size: 1.1rem;
 }
 
-.form-group input,
-.form-group textarea {
+
+.will-input {
   width: 100%;
   padding: 12px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #222;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e8e8e8;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
+}
+
+.will-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  color: #e8e8e8;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
 .form-group input:focus,

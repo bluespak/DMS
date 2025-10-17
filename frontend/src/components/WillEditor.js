@@ -247,12 +247,13 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
 
       <form onSubmit={handleSubmit} className="will-form">
         {/* 제목 입력 */}
-        <div className="form-group">
+        <div>
           <label htmlFor="subject">📋 제목</label>
           <input
             type="text"
             id="subject"
             name="subject"
+            className="will-input"
             value={formData.subject}
             onChange={handleInputChange}
             placeholder="유언장의 제목을 입력하세요"
@@ -262,7 +263,7 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
         </div>
 
         {/* 수신자 목록 */}
-        <div className="form-group">
+        <div>
           <label>👥 수신자 목록</label>
           <div className="recipients-section">
             {formData.recipients.map((recipient, index) => (
@@ -270,6 +271,7 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
                 <div className="recipient-inputs">
                   <input
                     type="text"
+                    className="will-input"
                     placeholder="수신자 이름"
                     value={recipient.name}
                     onChange={(e) => handleRecipientChange(index, 'name', e.target.value)}
@@ -277,6 +279,7 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
                   />
                   <input
                     type="email"
+                    className="will-input"
                     placeholder="수신자 이메일"
                     value={recipient.email}
                     onChange={(e) => handleRecipientChange(index, 'email', e.target.value)}
@@ -312,6 +315,7 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
           <textarea
             id="body"
             name="body"
+            className="will-input"
             value={formData.body}
             onChange={handleInputChange}
             placeholder="전달하고 싶은 메시지를 입력하세요..."
@@ -340,6 +344,7 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
                   <select
                     id="trigger_type"
                     name="trigger_type"
+                    className="will-input"
                     value={triggerData.trigger_type}
                     onChange={handleTriggerChange}
                     disabled={loading}
@@ -358,6 +363,7 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
                       type="date"
                       id="trigger_date"
                       name="trigger_date"
+                      className="will-input"
                       value={triggerData.trigger_date}
                       onChange={handleTriggerChange}
                       disabled={loading}
@@ -376,6 +382,7 @@ const WillEditor = ({ user, onSave, onCancel, existingWill = null }) => {
                       type="number"
                       id="trigger_value"
                       name="trigger_value"
+                      className="will-input"
                       value={triggerData.trigger_value}
                       onChange={handleTriggerChange}
                       placeholder="예: 3 (3일 후)"

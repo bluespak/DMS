@@ -894,7 +894,7 @@ function App() {
       <div className="page-content">
         {getCurrentPage() === 'home' && <DeadManSwitchHome onCreateSwitch={handleCreateSwitch} />}
         {getCurrentPage() === 'login' && <LoginPage onLogin={handleLogin} onSwitchToRegister={() => setCurrentView('register')} />}
-        {getCurrentPage() === 'register' && <RegisterPage onRegister={handleRegister} />}
+  {getCurrentPage() === 'register' && <RegisterPage onRegister={handleRegister} onSwitchToLogin={() => setCurrentView('login')} />}
         {getCurrentPage() === 'will-editor' && isAuthenticated && (
           <WillEditor
             user={currentUser}
