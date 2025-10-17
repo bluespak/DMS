@@ -893,7 +893,7 @@ function App() {
       {/* 페이지 내용 */}
       <div className="page-content">
         {getCurrentPage() === 'home' && <DeadManSwitchHome onCreateSwitch={handleCreateSwitch} />}
-        {getCurrentPage() === 'login' && <LoginPage onLogin={handleLogin} />}
+        {getCurrentPage() === 'login' && <LoginPage onLogin={handleLogin} onSwitchToRegister={() => setCurrentView('register')} />}
         {getCurrentPage() === 'register' && <RegisterPage onRegister={handleRegister} />}
         {getCurrentPage() === 'will-editor' && isAuthenticated && (
           <WillEditor

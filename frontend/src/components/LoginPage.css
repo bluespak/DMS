@@ -75,11 +75,26 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  color: #222;
+  background-color: #fff;
+}
+
+/* 입력폼 placeholder 색상 명확하게 */
+.form-group input::placeholder {
+  color: #201313;
+  opacity: 1;
+}
+
+/* 크롬/엣지/사파리 자동완성(autofill) 텍스트 색상 강제 지정 */
+.form-group input:-webkit-autofill {
+  -webkit-text-fill-color: #222 !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #667eea;
+  color: #222;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 

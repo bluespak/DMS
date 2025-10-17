@@ -47,10 +47,6 @@ const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
       return;
     }
 
-    // 비밀번호 길이 확인
-    alert(formData.grade.value);
-    alert(formData.grade);
-
     setLoading(true);
     setError('');
 

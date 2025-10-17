@@ -87,6 +87,8 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  color: #222;
+  background-color: #fff;
 }
 
 .form-group input:focus,

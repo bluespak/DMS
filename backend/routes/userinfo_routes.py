@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def init_userinfo_routes(db, UserInfo):
     """UserInfo 라우트를 초기화하고 모델을 주입"""
-    
+
     # 1. GET /api/users - 모든 사용자 조회
     @userinfo_bp.route('', methods=['GET'])
     def get_all_users():
