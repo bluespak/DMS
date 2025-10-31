@@ -46,6 +46,7 @@ from test_routes import init_test_routes
 from home_routes import init_home_routes
 from frontend_log_routes import init_frontend_log_routes
 from auth_routes import init_auth_routes
+from liveconfirmation_routes import init_liveconfirmation_routes
 
 # 모델 생성
 UserInfo = create_userinfo_model(db)
@@ -120,6 +121,7 @@ app.register_blueprint(init_system_routes(db))
 app.register_blueprint(init_test_routes())
 app.register_blueprint(init_home_routes())
 app.register_blueprint(init_auth_routes(db, UserInfo))
+app.register_blueprint(init_liveconfirmation_routes(db, DispatchLog))
 
 # Frontend 로그 라우트 초기화
 init_frontend_log_routes(app)

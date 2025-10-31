@@ -1,6 +1,6 @@
 services:
   # MySQL Database
-  db:
+  dmsdata:
     image: mysql:8.0.34
     container_name: dms_mysql
     restart: unless-stopped
@@ -22,7 +22,7 @@ services:
       retries: 10
 
   # Flask Backend API
-  backend:
+  dmsback:
     build: 
       context: ./backend
       dockerfile: Dockerfile
@@ -41,15 +41,16 @@ services:
       - DB_NAME=${DB_NAME:-dmsdb}
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
     depends_on:
-      db:
+      dmsdata:
         condition: service_healthy
     networks:
       - dms_network
     volumes:
       - ./backend/logs:/app/logs
 
+
   # React Frontend
-  frontend:
+  dmsfront:
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -60,7 +61,19 @@ services:
     ports:
       - "${FRONTEND_PORT:-3000}:80"
     depends_on:
-      - backend
+      - dmsback
+    networks:
+      - dms_network
+
+  # Postfix SMTP 단일 컨테이너 (catatnight/postfix)
+  postfix:
+    image: namshi/smtp
+    restart: unless-stopped
+    environment:
+      - MAIL_DOMAIN=willtesta.cafe24.com
+      - SMTP_USER=willtesta:willtestapw12!
+    ports:
+      - "25:25"
     networks:
       - dms_network
 
@@ -82,9 +95,11 @@ services:
       - dms_network
     profiles:
       - production
-
+      
 volumes:
   db_data:
+    driver: local
+  mailu_data:
     driver: local
 
 networks:

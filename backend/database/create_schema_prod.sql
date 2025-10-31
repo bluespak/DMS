@@ -56,11 +56,11 @@ CREATE TABLE IF NOT EXISTS triggers (
 CREATE TABLE IF NOT EXISTS dispatch_log (
   id INT PRIMARY KEY AUTO_INCREMENT,
   will_id INT NOT NULL,
-  recipient_id INT NOT NULL,
+  recipient_id INT NULL,
   sent_at DATETIME,
   delivered_at DATETIME,
   read_at DATETIME,
   status ENUM('pending', 'sent', 'delivered', 'read', 'failed') DEFAULT 'pending',
-  FOREIGN KEY (will_id) REFERENCES wills(id),
-  FOREIGN KEY (recipient_id) REFERENCES recipients(id)
+  type TINYINT NOT NULL,
+  FOREIGN KEY (will_id) REFERENCES wills(id)
 );

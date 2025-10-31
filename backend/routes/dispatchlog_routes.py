@@ -35,17 +35,21 @@ def init_dispatchlog_routes(db, DispatchLog, Recipient=None):
     def get_logs_by_will(will_id):
         try:
             if Recipient:
-                # JOIN 쿼리로 수신자 정보와 함께 조회
+                # OUTER JOIN으로 recipient_id가 없는 로그도 포함
                 logs_with_recipients = db.session.query(DispatchLog, Recipient)\
-                    .join(Recipient, DispatchLog.recipient_id == Recipient.id)\
+                    .outerjoin(Recipient, DispatchLog.recipient_id == Recipient.id)\
                     .filter(DispatchLog.will_id == will_id)\
                     .all()
-                
+
                 logs_list = []
                 for log, recipient in logs_with_recipients:
                     log_dict = log.to_dict()
-                    log_dict['recipient_name'] = recipient.recipient_name
-                    log_dict['recipient_email'] = recipient.recipient_email
+                    if recipient:
+                        log_dict['recipient_name'] = recipient.recipient_name
+                        log_dict['recipient_email'] = recipient.recipient_email
+                    else:
+                        log_dict['recipient_name'] = None
+                        log_dict['recipient_email'] = None
                     log_dict['created_at'] = log.sent_at.isoformat() if log.sent_at else None
                     logs_list.append(log_dict)
             else:
