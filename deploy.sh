@@ -3,7 +3,7 @@
 # DMS 배포 스크립트 for Cafe24 Linux Server
 # 사용법: ./deploy.sh [dev|prod]
 
-set -e  # 에러 발생 시 스크립트 중단
+set -euo pipefail  # 에러 발생 시 스크립트 중단
 
 ENVIRONMENT=${1:-dev}
 
@@ -30,6 +30,9 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
+echo "🧪 Docker Compose 설정 검증 중..."
+docker-compose config > /dev/null
+
 # 기존 컨테이너 중지 및 제거
 echo "🔄 기존 컨테이너 중지 중..."
 docker-compose down --remove-orphans
@@ -55,7 +58,7 @@ echo "🔍 서비스 상태 확인 중..."
 sleep 10
 
 # 데이터베이스 헬스체크
-if docker-compose exec -T db mysqladmin ping -h localhost --silent; then
+if docker-compose exec -T dmsdata sh -lc 'mysqladmin ping -h localhost -uroot -p"$MYSQL_ROOT_PASSWORD" --silent' ; then
     echo "✅ 데이터베이스 연결 성공"
 else
     echo "❌ 데이터베이스 연결 실패"

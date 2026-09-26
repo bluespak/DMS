@@ -117,9 +117,16 @@ python -m unittest test_userinfo_api.TestUserInfoAPI.test_create_user_success -v
 ## 🔧 테스트 설정
 
 ### 테스트 데이터베이스
-- **SQLite 인메모리 데이터베이스** 사용 (`sqlite:///:memory:`)
-- 각 테스트마다 독립적인 데이터베이스 환경
+- 기본값은 테스트 전용 SQLite 파일 DB 사용
+- `TEST_DATABASE_URI` 또는 `TEST_DB_*` 환경변수로 MySQL 테스트 DB 사용 가능
 - 테스트 후 자동 정리
+
+예시:
+
+```bash
+export TEST_DATABASE_URI="mysql+pymysql://user:password@dmsdata:3306/dmsdb_test"
+python -m unittest discover -s . -p "test_*.py" -v
+```
 
 ### 테스트 환경 설정
 - Flask 테스트 클라이언트 사용

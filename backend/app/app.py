@@ -33,6 +33,11 @@ from will import create_will_model
 from recipients import create_recipient_model
 from trigger import create_trigger_model
 from dispatchlog import create_dispatchlog_model
+from will_blockchain import (
+    create_blockchain_event_model,
+    create_blockchain_outbox_model,
+    create_will_version_model,
+)
 
 # 라우트 임포트 및 등록
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'routes'))
@@ -54,6 +59,9 @@ Will = create_will_model(db)
 Recipient = create_recipient_model(db)
 Trigger = create_trigger_model(db)
 DispatchLog = create_dispatchlog_model(db)
+WillVersion = create_will_version_model(db)
+BlockchainEvent = create_blockchain_event_model(db)
+BlockchainOutbox = create_blockchain_outbox_model(db)
 
 # API 요청 로깅 미들웨어
 @app.before_request

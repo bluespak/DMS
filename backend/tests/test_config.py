@@ -7,12 +7,37 @@ from flask_sqlalchemy import SQLAlchemy
 # 프로젝트 루트 경로를 Python path에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+
+def get_test_database_uri():
+    """환경변수 기반 테스트 DB URI를 반환하고, 없으면 SQLite 파일 DB를 사용합니다."""
+    explicit_uri = os.getenv('TEST_DATABASE_URI')
+    if explicit_uri:
+        return explicit_uri
+
+    test_db_host = os.getenv('TEST_DB_HOST')
+    test_db_user = os.getenv('TEST_DB_USER')
+    test_db_password = os.getenv('TEST_DB_PASSWORD')
+    test_db_name = os.getenv('TEST_DB_NAME')
+    test_db_port = os.getenv('TEST_DB_PORT', '3306')
+
+    if all([test_db_host, test_db_user, test_db_password, test_db_name]):
+        return (
+            f"mysql+pymysql://{test_db_user}:{test_db_password}"
+            f"@{test_db_host}:{test_db_port}/{test_db_name}"
+        )
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    sqlite_path = os.path.join(base_dir, 'test_api.sqlite')
+    return f"sqlite:///{sqlite_path}"
+
+
+def is_mysql_uri(database_uri):
+    return database_uri.startswith('mysql+')
+
 class TestConfig:
     """테스트용 설정"""
     TESTING = True
-    # 테스트 전용 MySQL 데이터베이스 사용 (운영 DB와 분리)
-    # 실제 운영 환경과 동일한 MySQL 엔진으로 정확한 테스트 가능
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://dmsTestUser:dmstest2025!@localhost/dmsdb_test'
+    SQLALCHEMY_DATABASE_URI = get_test_database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'test-secret-key'
 
@@ -60,6 +85,11 @@ def create_test_app():
     from models.recipients import create_recipient_model
     from models.trigger import create_trigger_model
     from models.dispatchlog import create_dispatchlog_model
+    from models.will_blockchain import (
+        create_blockchain_event_model,
+        create_blockchain_outbox_model,
+        create_will_version_model,
+    )
     
     # 모델 생성
     UserInfo = create_userinfo_model(db)
@@ -67,6 +97,9 @@ def create_test_app():
     Recipient = create_recipient_model(db)
     Trigger = create_trigger_model(db)
     DispatchLog = create_dispatchlog_model(db)
+    WillVersion = create_will_version_model(db)
+    BlockchainEvent = create_blockchain_event_model(db)
+    BlockchainOutbox = create_blockchain_outbox_model(db)
     
     # 테스트용 라우트 직접 생성 (Blueprint 재등록 문제 해결)
     from flask import Blueprint, jsonify, request
@@ -884,8 +917,16 @@ class BaseTestCase(unittest.TestCase):
         """각 테스트 실행 후 정리"""
         try:
             # 모든 테스트 데이터 삭제 (운영 데이터 보호)
+            database_uri = self.app.config['SQLALCHEMY_DATABASE_URI']
+            if is_mysql_uri(database_uri):
+                self.db.session.execute(self.db.text('SET FOREIGN_KEY_CHECKS = 0'))
+
             for table in reversed(self.db.metadata.sorted_tables):
                 self.db.session.execute(table.delete())
+
+            if is_mysql_uri(database_uri):
+                self.db.session.execute(self.db.text('SET FOREIGN_KEY_CHECKS = 1'))
+
             self.db.session.commit()
         except Exception as e:
             # 에러 발생 시 롤백

@@ -11,6 +11,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 from app.app import app
+from test_config import get_test_database_uri, is_mysql_uri
 
 class TestAPIConnectivity(unittest.TestCase):
     """API 연결성 테스트"""
@@ -19,8 +20,7 @@ class TestAPIConnectivity(unittest.TestCase):
         """테스트 전 설정"""
         self.app = app
         self.app.config['TESTING'] = True
-        # MySQL 테스트 데이터베이스 사용
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://dmsTestUser:dmstest2025!@localhost/dmsdb_test'
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = get_test_database_uri()
         self.client = self.app.test_client()
         
         # 테스트용 데이터베이스 테이블 생성
@@ -28,10 +28,12 @@ class TestAPIConnectivity(unittest.TestCase):
             from app.app import db
             db.create_all()
             # 기존 테스트 데이터 정리
-            db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 0'))
+            if is_mysql_uri(self.app.config['SQLALCHEMY_DATABASE_URI']):
+                db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 0'))
             for table in reversed(db.metadata.sorted_tables):
                 db.session.execute(table.delete())
-            db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 1'))
+            if is_mysql_uri(self.app.config['SQLALCHEMY_DATABASE_URI']):
+                db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 1'))
             db.session.commit()
     
     def tearDown(self):
@@ -39,10 +41,12 @@ class TestAPIConnectivity(unittest.TestCase):
         with self.app.app_context():
             from app.app import db
             # 테스트 데이터 정리 (테이블은 유지)
-            db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 0'))
+            if is_mysql_uri(self.app.config['SQLALCHEMY_DATABASE_URI']):
+                db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 0'))
             for table in reversed(db.metadata.sorted_tables):
                 db.session.execute(table.delete())
-            db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 1'))
+            if is_mysql_uri(self.app.config['SQLALCHEMY_DATABASE_URI']):
+                db.session.execute(db.text('SET FOREIGN_KEY_CHECKS = 1'))
             db.session.commit()
     
     def test_api_users_get_empty(self):
